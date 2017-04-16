@@ -1,0 +1,5 @@
+#icons:
+ 1. ic_image_gallery,ic_camera_alt, ic_video_cam
+    -padding=0%
+    -Asset Size=32dp
+    -Asset PAdding=8dp
