@@ -11,8 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.showcase.component.PhoneMediaControl;
-import com.showcase.component.PhotoPreview;
+import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.fragments.GalleryFragment;
 
 import java.util.List;

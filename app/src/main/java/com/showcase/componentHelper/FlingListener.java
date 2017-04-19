@@ -13,17 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.showcase.helper;
+package com.showcase.componentHelper;
+
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
 
 
 /**
  * @author Jason Polites
  *
  */
-public interface FlingAnimationListener {
+public class FlingListener extends SimpleOnGestureListener {
+	
+	private float velocityX;
+	private float velocityY;
+	
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
+		return true;
+	}
 
-	public void onMove(float x, float y);
+	public float getVelocityX() {
+		return velocityX;
+	}
 	
-	public void onComplete();
-	
+	public float getVelocityY() {
+		return velocityY;
+	}
 }

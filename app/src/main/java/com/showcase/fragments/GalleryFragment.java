@@ -20,7 +20,7 @@ import com.showcase.AlbumActivity;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
-import com.showcase.component.PhoneMediaControl;
+import com.showcase.componentHelper.PhoneMediaControl;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.showcase.component;
+package com.showcase.componentHelper;
 
 import android.app.Activity;
 import android.content.Context;

@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -20,7 +21,7 @@ import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
-import com.showcase.component.PhoneMediaControl;
+import com.showcase.componentHelper.PhoneMediaControl;
 
 import java.util.ArrayList;
 
@@ -62,9 +63,13 @@ public class CameraFragment extends Fragment {
         emptyView.setText("NoPhotos");
 		mView.setAdapter(listAdapter = new ListAdapter(mContext));
 		albumsSorted=GalleryFragment.albumsSorted;
-		photos=GalleryFragment.albumsSorted.get(0).photos;
-		
-        int position = mView.getFirstVisiblePosition();
+		if (albumsSorted.isEmpty()) {
+			Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
+		} else {
+			photos=GalleryFragment.albumsSorted.get(0).photos;
+		}
+
+		int position = mView.getFirstVisiblePosition();
         int columnsCount = 2;
         mView.setNumColumns(columnsCount);
         itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;

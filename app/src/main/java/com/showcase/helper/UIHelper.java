@@ -1,6 +1,8 @@
 package com.showcase.helper;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +36,15 @@ public class UIHelper {
             context.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else {
             context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
+    }
+    public static void fireIntent(Context context, Intent intent, boolean isNewActivity) {
+        Activity activity = (Activity) context;
+        context.startActivity(intent);
+        if (!isNewActivity) {
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else {
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 }

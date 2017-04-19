@@ -1,4 +1,4 @@
-package com.showcase.helper;
+package com.showcase.componentHelper;
 
 public interface GestureImageViewListener {
 

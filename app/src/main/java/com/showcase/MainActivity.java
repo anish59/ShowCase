@@ -1,6 +1,7 @@
 package com.showcase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +20,9 @@ import com.showcase.adapter.SlideMenuAdapter;
 import com.showcase.fragments.CameraFragment;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.VideoFragment;
+import com.showcase.helper.AppConstants;
 import com.showcase.helper.UIHelper;
+import com.showcase.lockScreen.PasswordActivity;
 import com.showcase.model.SlideData;
 
 import java.util.ArrayList;
@@ -67,9 +70,22 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_changePassword) {
+            Intent intent = new Intent(MainActivity.this, PasswordActivity.class);
+            boolean isFromOption = true;
+            intent.putExtra(AppConstants.INTENT_IS_FROM_OPTION, isFromOption);
+            intent.putExtra(AppConstants.INTENT_PRIVACY_SETTING, AppConstants.PrivacySetting.changePassword);
+            UIHelper.fireIntent(MainActivity.this, intent, true);
         }
+        if (id == R.id.action_removePassword) {
+            Intent intent = new Intent(MainActivity.this, PasswordActivity.class);
+            boolean isFromOption = true;
+            intent.putExtra(AppConstants.INTENT_IS_FROM_OPTION, isFromOption);
+            intent.putExtra(AppConstants.INTENT_PRIVACY_SETTING, AppConstants.PrivacySetting.removePassword);
+            UIHelper.fireIntent(MainActivity.this, intent, true);
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 

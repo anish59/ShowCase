@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.showcase.helper;
+package com.showcase.componentHelper;
 
 import android.graphics.PointF;
 import android.view.MotionEvent;

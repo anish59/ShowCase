@@ -1,4 +1,4 @@
-package com.showcase.component;
+package com.showcase.componentHelper;
 
 import android.content.Context;
 import android.database.Cursor;

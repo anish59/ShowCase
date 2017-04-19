@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:indeterminateDrawable="@drawable/pb_default" />
 
-    <com.showcase.helper.GestureImageView
+    <com.showcase.componentHelper.GestureImageView
         android:id="@+id/iv_content_vpp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

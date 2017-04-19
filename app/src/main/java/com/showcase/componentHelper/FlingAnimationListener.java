@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.showcase.helper;
+package com.showcase.componentHelper;
 
 
 /**
  * @author Jason Polites
  *
  */
-public interface ZoomAnimationListener {
-	public void onZoom(float scale, float x, float y);
+public interface FlingAnimationListener {
+
+	public void onMove(float x, float y);
+	
 	public void onComplete();
+	
 }

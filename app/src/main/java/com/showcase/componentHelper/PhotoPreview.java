@@ -1,4 +1,4 @@
-package com.showcase.component;
+package com.showcase.componentHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,7 +13,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.showcase.R;
-import com.showcase.helper.GestureImageView;
 
 
 public class PhotoPreview extends LinearLayout implements OnClickListener {

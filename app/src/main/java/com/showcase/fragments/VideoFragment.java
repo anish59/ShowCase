@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
-import com.showcase.component.PhoneMediaVideoController;
-import com.showcase.component.VideoThumbleLoader;
+import com.showcase.componentHelper.PhoneMediaVideoController;
+import com.showcase.componentHelper.VideoThumbleLoader;
 
 import java.util.ArrayList;
 

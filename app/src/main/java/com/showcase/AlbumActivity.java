@@ -17,7 +17,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.showcase.adapter.BaseFragmentAdapter;
-import com.showcase.component.PhoneMediaControl;
+import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.helper.UIHelper;
 
