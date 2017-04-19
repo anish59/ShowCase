@@ -27,21 +27,21 @@ import java.util.ArrayList;
 
 public class CameraFragment extends Fragment {
 
-    private TextView emptyView;
+	private TextView emptyView;
 	private GridView mView;
 	private Context mContext;
-	
-	
+
+
 	public static ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
 	public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
-	
+
 	private Integer cameraAlbumId = null;
 	private PhoneMediaControl.AlbumEntry selectedAlbum = null;
 	private int itemWidth = 100;
 	private ListAdapter listAdapter;
-	
-	
-	
+
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		/** Inflating the layout for this fragment **/
@@ -50,17 +50,17 @@ public class CameraFragment extends Fragment {
 		initializeView(v);
 		return v;
 	}
-	
+
 	private void initializeView(View v){
 		mView=(GridView)v.findViewById(R.id.grid_view);
-        emptyView = (TextView)v.findViewById(R.id.searchEmptyView);
-        emptyView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-        emptyView.setText("NoPhotos");
+		emptyView = (TextView)v.findViewById(R.id.searchEmptyView);
+		emptyView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return true;
+			}
+		});
+		emptyView.setText("NoPhotos");
 		mView.setAdapter(listAdapter = new ListAdapter(mContext));
 		albumsSorted=GalleryFragment.albumsSorted;
 		if (albumsSorted.isEmpty()) {
@@ -70,30 +70,30 @@ public class CameraFragment extends Fragment {
 		}
 
 		int position = mView.getFirstVisiblePosition();
-        int columnsCount = 2;
-        mView.setNumColumns(columnsCount);
-        itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;
-        mView.setColumnWidth(itemWidth);
+		int columnsCount = 2;
+		mView.setNumColumns(columnsCount);
+		itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;
+		mView.setColumnWidth(itemWidth);
 
-        listAdapter.notifyDataSetChanged();
-        mView.setSelection(position);
-        mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-            	Intent mIntent=new Intent(mContext,PhotoPreviewActivity.class);
-            	Bundle mBundle=new Bundle();
-            	mBundle.putInt("Key_FolderID", 0);
-            	mBundle.putInt("Key_ID", position);
-            	mIntent.putExtras(mBundle);
-            	startActivity(mIntent);
-            }
-        });
-        
-        if (listAdapter != null) {
-            listAdapter.notifyDataSetChanged();
-        }
+		listAdapter.notifyDataSetChanged();
+		mView.setSelection(position);
+		mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+				Intent mIntent=new Intent(mContext,PhotoPreviewActivity.class);
+				Bundle mBundle=new Bundle();
+				mBundle.putInt("Key_FolderID", 0);
+				mBundle.putInt("Key_ID", position);
+				mIntent.putExtras(mBundle);
+				startActivity(mIntent);
+			}
+		});
+
+		if (listAdapter != null) {
+			listAdapter.notifyDataSetChanged();
+		}
 	}
-	
+
 	private class ListAdapter extends BaseFragmentAdapter {
 		private Context mContext;
 		private LayoutInflater layoutInflater;
@@ -156,7 +156,7 @@ public class CameraFragment extends Fragment {
 				params.height = itemWidth;
 				view.setLayoutParams(params);
 				mHolder.imageView.setTag(i);
-				
+
 				view.setTag(mHolder);
 			} else {
 				mHolder = (viewHolder) view.getTag();

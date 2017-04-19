@@ -143,8 +143,17 @@ public class PhoneMediaControl {
 		public long dateTaken;
 		public String path;
 		public int orientation;
+        private int state;
 
-		public PhotoEntry(int bucketId, int imageId, long dateTaken, String path, int orientation) {
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
+        public PhotoEntry(int bucketId, int imageId, long dateTaken, String path, int orientation) {
 			this.bucketId = bucketId;
 			this.imageId = imageId;
 			this.dateTaken = dateTaken;
