@@ -38,7 +38,7 @@ public class CameraFragment extends Fragment {
 	private Integer cameraAlbumId = null;
 	private PhoneMediaControl.AlbumEntry selectedAlbum = null;
 	private int itemWidth = 100;
-	private ListAdapter listAdapter;
+	private CameraAdapter cameraAdapter;
 
 
 
@@ -61,7 +61,7 @@ public class CameraFragment extends Fragment {
 			}
 		});
 		emptyView.setText("NoPhotos");
-		mView.setAdapter(listAdapter = new ListAdapter(mContext));
+		mView.setAdapter(cameraAdapter = new CameraAdapter(mContext));
 		albumsSorted=GalleryFragment.albumsSorted;
 		if (albumsSorted.isEmpty()) {
 			Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
@@ -75,7 +75,7 @@ public class CameraFragment extends Fragment {
 		itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;
 		mView.setColumnWidth(itemWidth);
 
-		listAdapter.notifyDataSetChanged();
+		cameraAdapter.notifyDataSetChanged();
 		mView.setSelection(position);
 		mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -89,18 +89,18 @@ public class CameraFragment extends Fragment {
 			}
 		});
 
-		if (listAdapter != null) {
-			listAdapter.notifyDataSetChanged();
+		if (cameraAdapter != null) {
+			cameraAdapter.notifyDataSetChanged();
 		}
 	}
 
-	private class ListAdapter extends BaseFragmentAdapter {
+	private class CameraAdapter extends BaseFragmentAdapter {
 		private Context mContext;
 		private LayoutInflater layoutInflater;
 		private DisplayImageOptions options;
 		private ImageLoader imageLoader = ImageLoader.getInstance();
 
-		public ListAdapter(Context context) {
+		public CameraAdapter(Context context) {
 			this.mContext = context;
 			this.layoutInflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
