@@ -4,17 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,11 +62,6 @@ public class CameraFragment extends Fragment {
         });
         emptyView.setText("NoPhotos");
         mView.setAdapter(listAdapter = new ListAdapter(mContext));
-
-
-        mView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
-        mView.setMultiChoiceModeListener(new MultiChoiceModeListener());
-
         albumsSorted=GalleryFragment.albumsSorted;
         if (albumsSorted.isEmpty()) {
             Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
@@ -86,7 +77,7 @@ public class CameraFragment extends Fragment {
 
         listAdapter.notifyDataSetChanged();
         mView.setSelection(position);
-        /*mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent mIntent=new Intent(mContext,PhotoPreviewActivity.class);
@@ -96,9 +87,7 @@ public class CameraFragment extends Fragment {
                 mIntent.putExtras(mBundle);
                 startActivity(mIntent);
             }
-        });*/
-
-
+        });
 
         if (listAdapter != null) {
             listAdapter.notifyDataSetChanged();
@@ -200,34 +189,5 @@ public class CameraFragment extends Fragment {
             public ImageView imageView;
         }
 
-    }
-
-    public class MultiChoiceModeListener implements GridView.MultiChoiceModeListener{
-
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            PhoneMediaControl.PhotoEntry selectedPhoto = photos.get(position);
-            Toast.makeText(mContext, "selected_photo= "+ selectedPhoto, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-
-        }
     }
 }

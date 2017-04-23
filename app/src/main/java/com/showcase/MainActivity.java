@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.showcase.adapter.SlideMenuAdapter;
 import com.showcase.fragments.CameraFragment;
+import com.showcase.fragments.CameraFragment2;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.VideoFragment;
 import com.showcase.helper.AppConstants;
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
                 currentFragment = new GalleryFragment();
                 break;
             case 1:
-                currentFragment = new CameraFragment();
+                currentFragment = new CameraFragment2();
                 break;
             case 2:
                 currentFragment = new VideoFragment();

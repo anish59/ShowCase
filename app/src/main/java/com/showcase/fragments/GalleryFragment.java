@@ -172,8 +172,7 @@ public class GalleryFragment extends Fragment {
 			if (albumEntry.coverPhoto != null
 					&& albumEntry.coverPhoto.path != null) {
 				imageLoader.displayImage(
-						"file://" + albumEntry.coverPhoto.path, imageView,
-						options);
+						"file://" + albumEntry.coverPhoto.path, imageView,options);
 			} else {
 				imageView.setImageResource(R.drawable.nophotos);
 			}
