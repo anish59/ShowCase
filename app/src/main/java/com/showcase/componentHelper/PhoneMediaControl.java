@@ -13,11 +13,11 @@ import java.util.HashMap;
 
 public class PhoneMediaControl {
 
-	private static Context context;
+    private static Context context;
 
-	public static void loadGalleryPhotosAlbums(Context mContext , final int guid) {
-		context=mContext;
-		
+    public static void loadGalleryPhotosAlbums(Context mContext, final int guid) {
+        context = mContext;
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -76,7 +76,7 @@ public class PhoneMediaControl {
                         }
                     }
                 } catch (Exception e) {
-                	Log.e("tmessages", e.toString());
+                    Log.e("tmessages", e.toString());
                 } finally {
                     if (cursor != null) {
                         try {
@@ -89,92 +89,92 @@ public class PhoneMediaControl {
                 runOnUIThread(new Runnable() {
                     @Override
                     public void run() {
-                    	if (loadalbumphoto!=null) {
-                    		loadalbumphoto.loadPhoto(albumsSorted);
-						}
+                        if (loadalbumphoto != null) {
+                            loadalbumphoto.loadPhoto(albumsSorted);
+                        }
                     }
                 });
             }
         }).start();
     }
-	
-	 public static void runOnUIThread(Runnable runnable) {
-	        runOnUIThread(runnable, 0);
-	 }
-	 
-	public static void runOnUIThread(Runnable runnable, long delay) {
-		if (delay == 0) {
-			ShowCaseApplication.applicationHandler.post(runnable);
-		} else {
-			ShowCaseApplication.applicationHandler.postDelayed(runnable,delay);
-		}
-	}
-	 
-	
-	 private static final String[] projectionPhotos = {
-         MediaStore.Images.Media._ID,
-         MediaStore.Images.Media.BUCKET_ID,
-         MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-         MediaStore.Images.Media.DATA,
-         MediaStore.Images.Media.DATE_TAKEN,
-         MediaStore.Images.Media.ORIENTATION
-	 };
-	
-	public static class AlbumEntry {
-		public int bucketId;
-		public String bucketName;
-		public PhotoEntry coverPhoto;
-		public ArrayList<PhotoEntry> photos = new ArrayList<PhotoEntry>();
 
-		public AlbumEntry(int bucketId, String bucketName, PhotoEntry coverPhoto) {
-			this.bucketId = bucketId;
-			this.bucketName = bucketName;
-			this.coverPhoto = coverPhoto;
-		}
+    public static void runOnUIThread(Runnable runnable) {
+        runOnUIThread(runnable, 0);
+    }
 
-		public void addPhoto(PhotoEntry photoEntry) {
-			photos.add(photoEntry);
-		}
-	}
+    public static void runOnUIThread(Runnable runnable, long delay) {
+        if (delay == 0) {
+            ShowCaseApplication.applicationHandler.post(runnable);
+        } else {
+            ShowCaseApplication.applicationHandler.postDelayed(runnable, delay);
+        }
+    }
 
-	public static class PhotoEntry {
-		public int bucketId;
-		public int imageId;
-		public long dateTaken;
-		public String path;
-		public int orientation;
-        private int state;
 
-        public int getState() {
-            return state;
+    private static final String[] projectionPhotos = {
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.BUCKET_ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DATE_TAKEN,
+            MediaStore.Images.Media.ORIENTATION
+    };
+
+    public static class AlbumEntry {
+        public int bucketId;
+        public String bucketName;
+        public PhotoEntry coverPhoto;
+        public ArrayList<PhotoEntry> photos = new ArrayList<PhotoEntry>();
+
+        public AlbumEntry(int bucketId, String bucketName, PhotoEntry coverPhoto) {
+            this.bucketId = bucketId;
+            this.bucketName = bucketName;
+            this.coverPhoto = coverPhoto;
         }
 
-        public void setState(int state) {
-            this.state = state;
+        public void addPhoto(PhotoEntry photoEntry) {
+            photos.add(photoEntry);
+        }
+    }
+
+    public static class PhotoEntry {
+        public int bucketId;
+        public int imageId;
+        public long dateTaken;
+        public String path;
+        public int orientation;
+        public Boolean isSelected = false;
+
+        public Boolean getSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(Boolean selected) {
+            isSelected = selected;
         }
 
         public PhotoEntry(int bucketId, int imageId, long dateTaken, String path, int orientation) {
-			this.bucketId = bucketId;
-			this.imageId = imageId;
-			this.dateTaken = dateTaken;
-			this.path = path;
-			this.orientation = orientation;
-		}
-	}
-	
-	
-	public static loadAlbumPhoto loadalbumphoto; 
+            this.bucketId = bucketId;
+            this.imageId = imageId;
+            this.dateTaken = dateTaken;
+            this.path = path;
+            this.orientation = orientation;
+        }
+    }
 
-	public loadAlbumPhoto getLoadalbumphoto() {
-		return loadalbumphoto;
-	}
 
-	public void setLoadalbumphoto(loadAlbumPhoto loadalbumphoto) {
-		this.loadalbumphoto = loadalbumphoto;
-	}
+    public static loadAlbumPhoto loadalbumphoto;
 
-	public interface loadAlbumPhoto {
-		public void loadPhoto(ArrayList<AlbumEntry> albumsSorted);
-	}
-	
+    public loadAlbumPhoto getLoadalbumphoto() {
+        return loadalbumphoto;
+    }
+
+    public void setLoadalbumphoto(loadAlbumPhoto loadalbumphoto) {
+        this.loadalbumphoto = loadalbumphoto;
+    }
+
+    public interface loadAlbumPhoto {
+        public void loadPhoto(ArrayList<AlbumEntry> albumsSorted);
+    }
+
 }

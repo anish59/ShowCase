@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,13 +60,13 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
                     .into(holder.imgCamPic);
         }
 
-        holder.imgCamPic.setOnClickListener(new View.OnClickListener() {
+        holder.itemImgFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onItemClicked.onClick(position, view);
             }
         });
-        holder.imgCamPic.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemImgFrame.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 onItemClicked.onLongClick(position, view);
@@ -89,9 +90,11 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView emptyView;
         private ImageView imgCamPic;
+        private FrameLayout itemImgFrame;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            itemImgFrame =(FrameLayout)itemView.findViewById(R.id.itemImgFrame);
             imgCamPic = (ImageView) itemView.findViewById(R.id.album_image);
             emptyView = (TextView) itemView.findViewById(R.id.searchEmptyView);
         }

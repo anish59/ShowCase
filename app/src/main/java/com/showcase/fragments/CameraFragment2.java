@@ -1,6 +1,8 @@
 package com.showcase.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.CameraFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.SimpleDividerItemDecoration;
 
 import java.util.ArrayList;
 
@@ -30,10 +34,10 @@ public class CameraFragment2 extends Fragment {
     public static ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
 
-    private Integer cameraAlbumId = null;
     private PhoneMediaControl.AlbumEntry selectedAlbum = null;
-    private int itemWidth = 100;
 
+    private int firstSelectedPosition;
+    private boolean isMultiSelectionMode = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,49 +67,56 @@ public class CameraFragment2 extends Fragment {
             photos = GalleryFragment.albumsSorted.get(0).photos;
         }
         initAdapter();
-
-      /*  int position = mView.getFirstVisiblePosition();
-        int columnsCount = 2;
-        mView.setNumColumns(columnsCount);
-        itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;
-        mView.setColumnWidth(itemWidth);
-
-        listAdapter.notifyDataSetChanged();
-        mView.setSelection(position);
-      */  /*mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent mIntent=new Intent(mContext,PhotoPreviewActivity.class);
-                Bundle mBundle=new Bundle();
-                mBundle.putInt("Key_FolderID", 0);
-                mBundle.putInt("Key_ID", position);
-                mIntent.putExtras(mBundle);
-                startActivity(mIntent);
-            }
-        });*/
-
-
     }
 
     private void initAdapter() {
         mAdapter = new CameraFragmentAdapter(getActivity(), photos, new CameraFragmentAdapter.OnItemClicked() {
             @Override
             public void onClick(int position, View view) {
-
+                if (isMultiSelectionMode) {
+                    setImageSelection(view, position);
+                } else {
+                    Intent mIntent = new Intent(mContext, PhotoPreviewActivity.class);
+                    Bundle mBundle = new Bundle();
+                    mBundle.putInt("Key_FolderID", 0);
+                    mBundle.putInt("Key_ID", position);
+                    mIntent.putExtras(mBundle);
+                    startActivity(mIntent);
+                }
             }
 
             @Override
             public void onLongClick(int position, View view) {
-
+                if (!isMultiSelectionMode) {
+                    firstSelectedPosition = position;
+                    setImageSelection(view, position);
+                    isMultiSelectionMode = true;
+                }
             }
         });
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setItemViewCacheSize(photos != null ? photos.size() : 0);//keep it minimum 1 to avoid any conflict
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         recyclerView.setAdapter(mAdapter);
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
-        Log.e("PhotoSize","PhotoSize");
+    }
+
+    private void setImageSelection(View view, int position) {
+
+        if (photos.get(position).getSelected()) {
+            if (position != firstSelectedPosition) {
+                photos.get(position).setSelected(false);
+            } else {
+                firstSelectedPosition = -1;
+            }
+        } else {
+            photos.get(position).setSelected(true);
+        }
+
+        view.setBackgroundResource(photos.get(position).getSelected() ? R.drawable.img_selection_square : 0);
     }
 }
