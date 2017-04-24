@@ -64,14 +64,25 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem itemDelete, itemShare, itemDeselect;
         getMenuInflater().inflate(R.menu.main, menu);
+        itemDeselect = menu.findItem(R.id.action_unSelect);
+        itemDeselect.setVisible(false);
+
+        itemShare = menu.findItem(R.id.action_shareImages);
+        itemShare.setVisible(false);
+
+        itemDelete = menu.findItem(R.id.action_deleteImages);
+        itemDelete.setVisible(false);
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_changePassword) {
+       /* if (id == R.id.action_changePassword) {
             Intent intent = new Intent(MainActivity.this, PasswordActivity.class);
             boolean isFromOption = true;
             intent.putExtra(AppConstants.INTENT_IS_FROM_OPTION, isFromOption);
@@ -85,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
             intent.putExtra(AppConstants.INTENT_PRIVACY_SETTING, AppConstants.PrivacySetting.removePassword);
             UIHelper.fireIntent(MainActivity.this, intent, true);
         }
-
+*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -202,4 +213,6 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
         }
         return arrayList;
     }
+
+
 }

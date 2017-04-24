@@ -28,6 +28,7 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
     private DisplayImageOptions options;
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private OnItemClicked onItemClicked;
+    private boolean isRemoveFirstPostionBackground =false;
 
     public CameraFragmentAdapter(Context context, ArrayList<PhoneMediaControl.PhotoEntry> photos, OnItemClicked onItemClicked) {
         this.context = context;
@@ -41,11 +42,19 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
                 .cacheOnDisc(true).considerExifParams(true).build();
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));*/
 
+    public void setItems(ArrayList<PhoneMediaControl.PhotoEntry> photos, Context context, boolean isRemoveFirstPostionBackground) {
+        this.photos = photos;
+        this.context = context;
+        this.isRemoveFirstPostionBackground=isRemoveFirstPostionBackground;
+        notifyDataSetChanged();
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_image, parent, false);
         return new MyViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
@@ -58,6 +67,10 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
                     .placeholder(R.drawable.nophotos)
                     .crossFade()
                     .into(holder.imgCamPic);
+        }
+
+        if (isRemoveFirstPostionBackground) {
+            holder.itemImgFrame.setBackgroundResource(0);
         }
 
         holder.itemImgFrame.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +107,7 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            itemImgFrame =(FrameLayout)itemView.findViewById(R.id.itemImgFrame);
+            itemImgFrame = (FrameLayout) itemView.findViewById(R.id.itemImgFrame);
             imgCamPic = (ImageView) itemView.findViewById(R.id.album_image);
             emptyView = (TextView) itemView.findViewById(R.id.searchEmptyView);
         }

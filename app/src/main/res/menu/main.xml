@@ -2,11 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_unSelect"
+        android:icon="@drawable/ic_deselect"
+        android:orderInCategory="100"
+        android:title=""
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_shareImages"
+        android:icon="@drawable/ic_share"
+        android:orderInCategory="100"
+        android:title="share"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_deleteImages"
+        android:icon="@drawable/ic_delete"
+        android:orderInCategory="100"
+        android:title="delete"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <item
+
+
+    <!--<item
         android:id="@+id/action_privacy"
         android:orderInCategory="100"
         android:title="@string/privacy"
@@ -24,5 +44,5 @@
                 app:showAsAction="never"/>
         </menu>
     </item>
-
+-->
 </menu>

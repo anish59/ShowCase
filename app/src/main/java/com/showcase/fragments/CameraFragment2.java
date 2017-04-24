@@ -2,13 +2,17 @@ package com.showcase.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +23,14 @@ import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.CameraFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.ProgressBarHelper;
+import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
 
+import java.io.File;
 import java.util.ArrayList;
 
+//Todo: Two issues found 1. sharing intent takes past selected images and image delete is still not proper.
 public class CameraFragment2 extends Fragment {
 
     private TextView emptyView;
@@ -38,6 +46,16 @@ public class CameraFragment2 extends Fragment {
 
     private int firstSelectedPosition;
     private boolean isMultiSelectionMode = false;
+    private boolean isDeselectIconVisible = false;
+    private ProgressListener progressListener;
+    private MenuItem itemDeselect, itemShare, itemDelete;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,6 +110,9 @@ public class CameraFragment2 extends Fragment {
                     setImageSelection(view, position);
                     isMultiSelectionMode = true;
                 }
+
+                isDeselectIconVisible = true;
+                getActivity().invalidateOptionsMenu();
             }
         });
 
@@ -107,7 +128,7 @@ public class CameraFragment2 extends Fragment {
 
     private void setImageSelection(View view, int position) {
 
-        if (photos.get(position).getSelected()) {
+        if (photos.get(position).isSelected()) {
             if (position != firstSelectedPosition) {
                 photos.get(position).setSelected(false);
             } else {
@@ -117,6 +138,112 @@ public class CameraFragment2 extends Fragment {
             photos.get(position).setSelected(true);
         }
 
-        view.setBackgroundResource(photos.get(position).getSelected() ? R.drawable.img_selection_square : 0);
+        view.setBackgroundResource(photos.get(position).isSelected() ? R.drawable.img_selection_square : 0);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        if (isDeselectIconVisible) {
+            itemDeselect = menu.findItem(R.id.action_unSelect);
+            itemDeselect.setVisible(true);
+
+            itemShare = menu.findItem(R.id.action_shareImages);
+            itemShare.setVisible(true);
+
+            itemDelete = menu.findItem(R.id.action_deleteImages);
+            itemDelete.setVisible(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_unSelect:
+                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+                break;
+            case R.id.action_shareImages:
+                shareImages();
+                break;
+            case R.id.action_deleteImages:
+                deleteImages();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteImages() {
+
+        try {
+            progressListener = new ProgressBarHelper(getActivity(), "Please Wait..");
+            if (isMultiSelectionMode && !photos.isEmpty()) {
+                progressListener.showProgressDialog();
+                for (PhoneMediaControl.PhotoEntry photo : photos) {
+                    if (photo.isSelected()) {
+                        File fileToBeDeleted = new File(photo.path);
+                        if (fileToBeDeleted.exists()) {
+                            fileToBeDeleted.getAbsoluteFile().delete();
+                        }
+                    }
+                }
+                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+                progressListener.hidProgressDialog();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    /*File fdelete = new File(uri.getPath());
+if (fdelete.exists()) {
+        if (fdelete.delete()) {
+            System.out.println("file Deleted :" + uri.getPath());
+        } else {
+            System.out.println("file not Deleted :" + uri.getPath());
+        }
+    }*/
+
+    private void shareImages() {
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Sharing Images");
+        intent.setType("image/jpeg"); /* This is sharing jpeg images. */
+
+        ArrayList<Uri> files = new ArrayList<>();
+        if (isMultiSelectionMode && !photos.isEmpty()) {
+            for (PhoneMediaControl.PhotoEntry photo : photos) {
+                if (photo.isSelected()) {
+                    files.add(Uri.parse(photo.path));
+                }
+            }
+
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+            startActivity(intent);
+            imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        }
+    }
+
+    private void imageDeselectionAndNotify(MenuItem itemDeselect, MenuItem itemShare, MenuItem itemDelete) {
+        refreshData();
+        itemDeselect.setVisible(false);
+        itemShare.setVisible(false);
+        itemDelete.setVisible(false);
+    }
+
+    private void refreshData() {
+        if (!photos.isEmpty()) {
+            isMultiSelectionMode = false;
+            photos = new ArrayList<>();
+            albumsSorted = GalleryFragment.albumsSorted;
+            if (albumsSorted.isEmpty()) {
+                Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("size", GalleryFragment.albumsSorted.get(0).photos.size() + "");
+                photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
+            }
+            mAdapter.setItems(photos, getActivity(), true);
+        }
     }
 }

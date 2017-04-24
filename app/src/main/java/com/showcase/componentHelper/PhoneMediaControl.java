@@ -145,7 +145,7 @@ public class PhoneMediaControl {
         public int orientation;
         public Boolean isSelected = false;
 
-        public Boolean getSelected() {
+        public Boolean isSelected() {
             return isSelected;
         }
 
