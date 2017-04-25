@@ -3,46 +3,27 @@
 
     <item
         android:id="@+id/action_unSelect"
-        android:icon="@drawable/ic_deselect"
         android:orderInCategory="100"
-        android:title=""
+        android:title="Un"
         app:showAsAction="always" />
+    <!--@drawable/ic_deselect-->
     <item
         android:id="@+id/action_shareImages"
-        android:icon="@drawable/ic_share"
         android:orderInCategory="100"
-        android:title="share"
+        android:title="S"
         app:showAsAction="always" />
+    <!--android:icon="@drawable/ic_share"-->
+
     <item
         android:id="@+id/action_deleteImages"
-        android:icon="@drawable/ic_delete"
         android:orderInCategory="100"
-        android:title="delete"
+        android:title="D"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <!--android:icon="@drawable/ic_delete"-->
 
-
-    <!--<item
-        android:id="@+id/action_privacy"
-        android:orderInCategory="100"
-        android:title="@string/privacy"
-        app:showAsAction="never">
-        <menu>
-            <item
-                android:id="@+id/action_changePassword"
-                android:orderInCategory="100"
-                android:title="@string/privacy"
-                app:showAsAction="never"/>
-            <item
-                android:id="@+id/action_removePassword"
-                android:orderInCategory="100"
-                android:title="@string/privacy"
-                app:showAsAction="never"/>
-        </menu>
-    </item>
--->
 </menu>

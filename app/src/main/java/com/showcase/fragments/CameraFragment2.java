@@ -2,8 +2,11 @@ package com.showcase.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,7 +33,7 @@ import com.showcase.helper.SimpleDividerItemDecoration;
 import java.io.File;
 import java.util.ArrayList;
 
-//Todo:  issues found 1. sharing intent takes past selected images.
+//Todo: Remaining work
 public class CameraFragment2 extends Fragment {
 
     private TextView emptyView;
@@ -49,6 +52,7 @@ public class CameraFragment2 extends Fragment {
     private boolean isDeselectIconVisible = false;
     private ProgressListener progressListener;
     private MenuItem itemDeselect, itemShare, itemDelete;
+    private ArrayList<PhoneMediaControl.PhotoEntry> photos2;
 
 
     @Override
@@ -83,6 +87,7 @@ public class CameraFragment2 extends Fragment {
             Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
         } else {
             photos = GalleryFragment.albumsSorted.get(0).photos;
+            photos2 = GalleryFragment.albumsSorted.get(0).photos;
         }
         initAdapter();
     }
@@ -176,48 +181,53 @@ public class CameraFragment2 extends Fragment {
 
         try {
             progressListener = new ProgressBarHelper(getActivity(), "Please Wait..");
+            progressListener.showProgressDialog();
             if (isMultiSelectionMode && !photos.isEmpty()) {
-                progressListener.showProgressDialog();
-                /*for (PhoneMediaControl.PhotoEntry photo : photos) {
-                    if (photo.isSelected()) {
-                        File fileToBeDeleted = new File(photo.path);
-                        if (fileToBeDeleted.exists()) {
-                            fileToBeDeleted.getAbsoluteFile().delete();
-                        }
-
-                    }
-                }*/
                 int picsSize = photos.size();
                 for (int i = 0; i < picsSize; i++) {
                     if (photos.get(i).isSelected) {
-                        File fDelete = new File("file://" + photos.get(i).path);
+                        File fDelete = new File(photos.get(i).path);
+                        Log.e("path:", " " + i + ": " + photos.get(i).path);
                         if (fDelete.exists()) {
                             Log.e("gettingDeleted: ", "" + fDelete.delete() + " : " + fDelete.getAbsolutePath());
 
                             fDelete.getAbsoluteFile().delete();
-//                            photos.remove(i);
-                            GalleryFragment.albumsSorted.get(0).photos.remove(i);
+                            photos2.remove(i);
                         } else {
                             Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
                         }
                     }
                 }
-                progressListener.hidProgressDialog();
-                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        progressListener.hidProgressDialog();
+        callBroadCast();
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
 
     }
-    /*File fdelete = new File(uri.getPath());
-if (fdelete.exists()) {
-        if (fdelete.delete()) {
-            System.out.println("file Deleted :" + uri.getPath());
+
+    public void callBroadCast() {
+        if (Build.VERSION.SDK_INT >= 14) {
+            Log.e("-->", " >= 14");
+            MediaScannerConnection.scanFile(getActivity(), new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                /*
+                 *   (non-Javadoc)
+                 * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
+                 */
+                public void onScanCompleted(String path, Uri uri) {
+                    Log.e("ExternalStorage", "Scanned " + path + ":");
+                    Log.e("ExternalStorage", "-> uri=" + uri);
+                }
+            });
         } else {
-            System.out.println("file not Deleted :" + uri.getPath());
+            Log.e("-->", " < 14");
+            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
         }
-    }*/
+    }
 
     private void shareImages() {
 
@@ -255,8 +265,8 @@ if (fdelete.exists()) {
             if (albumsSorted.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("size", GalleryFragment.albumsSorted.get(0).photos.size() + "");
-                photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
+                Log.e("size", photos2 + "");
+                photos.addAll(photos2);
             }
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 photo.setSelected(false);
