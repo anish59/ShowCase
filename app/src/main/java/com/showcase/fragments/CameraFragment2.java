@@ -33,7 +33,6 @@ import com.showcase.helper.SimpleDividerItemDecoration;
 import java.io.File;
 import java.util.ArrayList;
 
-//Todo: Remaining work
 public class CameraFragment2 extends Fragment {
 
     private TextView emptyView;
