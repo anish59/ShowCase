@@ -30,7 +30,7 @@ import com.showcase.helper.SimpleDividerItemDecoration;
 import java.io.File;
 import java.util.ArrayList;
 
-//Todo: Two issues found 1. sharing intent takes past selected images and image delete is still not proper.
+//Todo:  issues found 1. sharing intent takes past selected images.
 public class CameraFragment2 extends Fragment {
 
     private TextView emptyView;
@@ -110,7 +110,6 @@ public class CameraFragment2 extends Fragment {
                     setImageSelection(view, position);
                     isMultiSelectionMode = true;
                 }
-
                 isDeselectIconVisible = true;
                 getActivity().invalidateOptionsMenu();
             }
@@ -179,16 +178,32 @@ public class CameraFragment2 extends Fragment {
             progressListener = new ProgressBarHelper(getActivity(), "Please Wait..");
             if (isMultiSelectionMode && !photos.isEmpty()) {
                 progressListener.showProgressDialog();
-                for (PhoneMediaControl.PhotoEntry photo : photos) {
+                /*for (PhoneMediaControl.PhotoEntry photo : photos) {
                     if (photo.isSelected()) {
                         File fileToBeDeleted = new File(photo.path);
                         if (fileToBeDeleted.exists()) {
                             fileToBeDeleted.getAbsoluteFile().delete();
                         }
+
+                    }
+                }*/
+                int picsSize = photos.size();
+                for (int i = 0; i < picsSize; i++) {
+                    if (photos.get(i).isSelected) {
+                        File fDelete = new File("file://" + photos.get(i).path);
+                        if (fDelete.exists()) {
+                            Log.e("gettingDeleted: ", "" + fDelete.delete() + " : " + fDelete.getAbsolutePath());
+
+                            fDelete.getAbsoluteFile().delete();
+//                            photos.remove(i);
+                            GalleryFragment.albumsSorted.get(0).photos.remove(i);
+                        } else {
+                            Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
+                        }
                     }
                 }
-                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
                 progressListener.hidProgressDialog();
+                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -242,6 +257,9 @@ if (fdelete.exists()) {
             } else {
                 Log.e("size", GalleryFragment.albumsSorted.get(0).photos.size() + "");
                 photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
+            }
+            for (PhoneMediaControl.PhotoEntry photo : photos) {
+                photo.setSelected(false);
             }
             mAdapter.setItems(photos, getActivity(), true);
         }
