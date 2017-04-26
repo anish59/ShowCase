@@ -17,16 +17,17 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.showcase.AlbumActivity;
+import com.showcase.AlbumActivity2;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.FunctionHelper;
 
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
 
-    public static final String PACKAGE = "org.ece.owngallery";
     private TextView emptyView;
     private GridView mView;
     private Context mContext;
@@ -44,19 +45,13 @@ public class GalleryFragment extends Fragment {
         /** Inflating the layout for this fragment **/
         mContext = this.getActivity();
         View v = inflater.inflate(R.layout.fragment_gallery, null);
-        mView = (GridView) v.findViewById(R.id.grid_view);
-        emptyView = (TextView) v.findViewById(R.id.searchEmptyView);
+        initializeView(v);
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        initializeView();
-    }
-
-    private void initializeView() {
-
+    private void initializeView(View v) {
+        mView = (GridView) v.findViewById(R.id.grid_view);
+        emptyView = (TextView) v.findViewById(R.id.searchEmptyView);
         emptyView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -77,7 +72,7 @@ public class GalleryFragment extends Fragment {
         mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent mIntent = new Intent(mContext, AlbumActivity.class);
+                Intent mIntent = new Intent(mContext, AlbumActivity2.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putString("Key_ID", position + "");
                 mBundle.putString("Key_Name", albumsSorted.get(position).bucketName + "");
@@ -176,7 +171,8 @@ public class GalleryFragment extends Fragment {
             if (albumEntry.coverPhoto != null
                     && albumEntry.coverPhoto.path != null) {
                 imageLoader.displayImage(
-                        "file://" + albumEntry.coverPhoto.path, imageView, options);
+                        "file://" + albumEntry.coverPhoto.path, imageView,
+                        options);
             } else {
                 imageView.setImageResource(R.drawable.nophotos);
             }

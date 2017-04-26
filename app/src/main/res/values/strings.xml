@@ -12,4 +12,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="please_confirm_again">Please confirm again.</string>
     <string name="skip">Skip</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="share">share</string>
+    <string name="delete">Delete</string>
 </resources>

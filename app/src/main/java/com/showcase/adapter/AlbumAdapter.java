@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by ANISH on 22-04-2017.
  */
 
-public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAdapter.MyViewHolder> {
+public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder> {
 
     private Context context;
     private ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
@@ -30,7 +30,7 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
     private OnItemClicked onItemClicked;
     private boolean isRemoveFirstPostionBackground =false;
 
-    public CameraFragmentAdapter(Context context, ArrayList<PhoneMediaControl.PhotoEntry> photos, OnItemClicked onItemClicked) {
+    public AlbumAdapter(Context context, ArrayList<PhoneMediaControl.PhotoEntry> photos, OnItemClicked onItemClicked) {
         this.context = context;
         this.photos = photos;
         this.onItemClicked = onItemClicked;

@@ -26,6 +26,7 @@ import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.CameraFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
@@ -44,7 +45,6 @@ public class CameraFragment2 extends Fragment {
     public static ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
 
-    private PhoneMediaControl.AlbumEntry selectedAlbum = null;
 
     private int firstSelectedPosition;
     private boolean isMultiSelectionMode = false;
@@ -86,7 +86,7 @@ public class CameraFragment2 extends Fragment {
             Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
         } else {
             photos = GalleryFragment.albumsSorted.get(0).photos;
-            photos2 = GalleryFragment.albumsSorted.get(0).photos;
+//            photos2 = GalleryFragment.albumsSorted.get(0).photos;
         }
         initAdapter();
     }
@@ -190,8 +190,8 @@ public class CameraFragment2 extends Fragment {
                         if (fDelete.exists()) {
                             Log.e("gettingDeleted: ", "" + fDelete.delete() + " : " + fDelete.getAbsolutePath());
 
-                            fDelete.getAbsoluteFile().delete();
-                            photos2.remove(i);
+                            fDelete.delete();
+                            //photos2.remove(i);
                         } else {
                             Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
                         }
@@ -203,19 +203,19 @@ public class CameraFragment2 extends Fragment {
             e.printStackTrace();
         }
         progressListener.hidProgressDialog();
-        callBroadCast();
+        FunctionHelper.callBroadCast(getActivity());
         imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
 
     }
 
-    public void callBroadCast() {
+    /*public void callBroadCast() {
         if (Build.VERSION.SDK_INT >= 14) {
             Log.e("-->", " >= 14");
             MediaScannerConnection.scanFile(getActivity(), new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                /*
+                *//*
                  *   (non-Javadoc)
                  * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
-                 */
+                 *//*
                 public void onScanCompleted(String path, Uri uri) {
                     Log.e("ExternalStorage", "Scanned " + path + ":");
                     Log.e("ExternalStorage", "-> uri=" + uri);
@@ -226,7 +226,7 @@ public class CameraFragment2 extends Fragment {
             getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
                     Uri.parse("file://" + Environment.getExternalStorageDirectory())));
         }
-    }
+    }*/
 
     private void shareImages() {
 
@@ -264,8 +264,9 @@ public class CameraFragment2 extends Fragment {
             if (albumsSorted.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("size", photos2 + "");
-                photos.addAll(photos2);
+                int size=GalleryFragment.albumsSorted.get(0).photos.size();
+                Log.e("RefreshSize :",size+"");
+                photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
             }
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 photo.setSelected(false);

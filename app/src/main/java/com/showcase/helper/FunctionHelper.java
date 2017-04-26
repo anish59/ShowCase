@@ -1,8 +1,12 @@
 package com.showcase.helper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.compat.BuildConfig;
 import android.util.Config;
 import android.util.DisplayMetrics;
@@ -44,6 +48,26 @@ public class FunctionHelper {
     public static void logE(String tag, String print) {
         if (BuildConfig.DEBUG) {
             Log.e(tag, print);
+        }
+    }
+
+    public static void callBroadCast(Context context) {
+        if (Build.VERSION.SDK_INT >= 14) {
+            Log.e("-->", " >= 14");
+            MediaScannerConnection.scanFile(context, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                /*
+                 *   (non-Javadoc)
+                 * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
+                 */
+                public void onScanCompleted(String path, Uri uri) {
+                    Log.e("ExternalStorage", "Scanned " + path + ":");
+                    Log.e("ExternalStorage", "-> uri=" + uri);
+                }
+            });
+        } else {
+            Log.e("-->", " < 14");
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
         }
     }
 }

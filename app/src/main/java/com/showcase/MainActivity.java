@@ -1,7 +1,6 @@
 package com.showcase;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,13 +16,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.showcase.adapter.SlideMenuAdapter;
-import com.showcase.fragments.CameraFragment;
 import com.showcase.fragments.CameraFragment2;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.VideoFragment;
-import com.showcase.helper.AppConstants;
 import com.showcase.helper.UIHelper;
-import com.showcase.lockScreen.PasswordActivity;
 import com.showcase.model.SlideData;
 
 import java.util.ArrayList;

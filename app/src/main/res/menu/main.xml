@@ -3,27 +3,28 @@
 
     <item
         android:id="@+id/action_unSelect"
+        android:icon="@drawable/ic_deselect"
         android:orderInCategory="100"
-        android:title="Un"
+        android:title="@string/deselect_all"
         app:showAsAction="always" />
-    <!--@drawable/ic_deselect-->
     <item
         android:id="@+id/action_shareImages"
+        android:icon="@drawable/ic_share"
         android:orderInCategory="100"
-        android:title="S"
+        android:title="@string/share"
         app:showAsAction="always" />
-    <!--android:icon="@drawable/ic_share"-->
 
     <item
         android:id="@+id/action_deleteImages"
+        android:icon="@drawable/ic_delete"
         android:orderInCategory="100"
-        android:title="D"
-        app:showAsAction="always" />
+        android:title="@string/delete"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
-    <!--android:icon="@drawable/ic_delete"-->
+
 
 </menu>
