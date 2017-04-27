@@ -145,8 +145,7 @@ public class PhoneMediaVideoController {
 		return loadallvideomediainterface;
 	}
 
-	public static void setLoadallvideomediainterface(
-			loadAllVideoMediaInterface loadallvideomediainterface) {
+	public static void setLoadallvideomediainterface(loadAllVideoMediaInterface loadallvideomediainterface) {
 		PhoneMediaVideoController.loadallvideomediainterface = loadallvideomediainterface;
 	}
 

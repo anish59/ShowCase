@@ -19,11 +19,15 @@ import com.showcase.adapter.SlideMenuAdapter;
 import com.showcase.fragments.CameraFragment2;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.VideoFragment;
+import com.showcase.fragments.VideoFragment2;
 import com.showcase.helper.UIHelper;
 import com.showcase.model.SlideData;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.SlideMenuAdapterInterface {
 
     private Context mContext;
@@ -183,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
                 currentFragment = new CameraFragment2();
                 break;
             case 2:
-                currentFragment = new VideoFragment();
+                currentFragment = new VideoFragment2();
                 break;
 
             default:
@@ -209,6 +213,5 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
         }
         return arrayList;
     }
-
 
 }

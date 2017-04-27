@@ -23,8 +23,6 @@ import java.util.ArrayList;
 
 public class VideoFragment extends Fragment implements PhoneMediaVideoController.loadAllVideoMediaInterface {
 
-	public static final String PACKAGE = "org.ece.owngallery";
-    private TextView emptyView;
 	private GridView mView;
 	private Context mContext;
 	private int itemWidth = 100;
@@ -36,14 +34,13 @@ public class VideoFragment extends Fragment implements PhoneMediaVideoController
 		/** Inflating the layout for this fragment **/
 		mContext = this.getActivity();
 		View v = inflater.inflate(R.layout.fragment_gallery, null);
-		initializeView(v);
+		mView=(GridView)v.findViewById(R.id.grid_view);
+		initAdapter();
 		return v;
 	}
 	
-	private void initializeView(View v){
-		mView=(GridView)v.findViewById(R.id.grid_view);
+	private void initAdapter(){
 		mView.setAdapter(listAdapter = new ListAdapter(mContext));
-
         int position = mView.getFirstVisiblePosition();
         int columnsCount = 3;
         mView.setNumColumns(columnsCount);
@@ -69,7 +66,7 @@ public class VideoFragment extends Fragment implements PhoneMediaVideoController
         }
 	}
 	
-	
+
 	private ArrayList<PhoneMediaVideoController.VideoDetails> arrayVideoDetails = null;
 	private class ListAdapter extends BaseFragmentAdapter {
 		private Context mContext;

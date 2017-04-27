@@ -6,7 +6,7 @@
     -Asset PAdding=8dp
 
 
-#Todo: 1. Add icon in git first of all.
+#todo: 1. Delete functionality remaining.
 #Todo: 2. Remove all logs with debug logs.
 #Todo: 3. Ask for permission before deleting images.
 #Todo: 4. Implement same functionality in GalleryFragment and VideoFragment.(Major Task)

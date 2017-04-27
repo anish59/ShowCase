@@ -32,6 +32,7 @@ import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CameraFragment2 extends Fragment {
@@ -147,15 +148,12 @@ public class CameraFragment2 extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
+        itemDeselect = menu.findItem(R.id.action_unSelect);
+        itemShare = menu.findItem(R.id.action_shareImages);
+        itemDelete = menu.findItem(R.id.action_deleteImages);
         if (isDeselectIconVisible) {
-            itemDeselect = menu.findItem(R.id.action_unSelect);
             itemDeselect.setVisible(true);
-
-            itemShare = menu.findItem(R.id.action_shareImages);
             itemShare.setVisible(true);
-
-            itemDelete = menu.findItem(R.id.action_deleteImages);
             itemDelete.setVisible(true);
         }
     }
@@ -192,6 +190,16 @@ public class CameraFragment2 extends Fragment {
 
                             fDelete.delete();
                             //photos2.remove(i);
+                            if (fDelete.exists()) {
+                                try {
+                                    fDelete.getCanonicalFile().delete();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (fDelete.exists()) {
+                                    getActivity().getApplicationContext().deleteFile(fDelete.getName());
+                                }
+                            }
                         } else {
                             Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
                         }
@@ -203,6 +211,7 @@ public class CameraFragment2 extends Fragment {
             e.printStackTrace();
         }
         progressListener.hidProgressDialog();
+        mAdapter.setItems(photos, getActivity(), true);
         FunctionHelper.callBroadCast(getActivity());
         imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
 
@@ -264,8 +273,8 @@ public class CameraFragment2 extends Fragment {
             if (albumsSorted.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
-                int size=GalleryFragment.albumsSorted.get(0).photos.size();
-                Log.e("RefreshSize :",size+"");
+                int size = GalleryFragment.albumsSorted.get(0).photos.size();
+                Log.e("RefreshSize :", size + "");
                 photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
             }
             for (PhoneMediaControl.PhotoEntry photo : photos) {

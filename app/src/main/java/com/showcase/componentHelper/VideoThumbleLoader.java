@@ -27,6 +27,7 @@ public class VideoThumbleLoader {
     private Map<String, Bitmap> videoBitmap = Collections.synchronizedMap(new WeakHashMap<String, Bitmap>());
 
 
+
     public VideoThumbleLoader(Context context) {
         //Make the background thead low priority. This way it will not affect the UI performance
         photoLoaderThread.setPriority(Thread.NORM_PRIORITY - 1);
