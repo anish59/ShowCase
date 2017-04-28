@@ -48,6 +48,7 @@ public class AlbumActivity2 extends ActionBarActivity {
     private int firstSelectedPosition;
     private boolean isDeselectIconVisible = false;
     private MenuItem itemDeselect, itemShare, itemDelete;
+    private ArrayList<PhoneMediaControl.PhotoEntry> photos2;
 
 
     @Override
@@ -59,6 +60,7 @@ public class AlbumActivity2 extends ActionBarActivity {
 
 
         getIntentData();
+        //photos2= GalleryFragment.albumsSorted.get(AlbummID).photos;
         initializeActionBar();
         initAdapter();
     }
@@ -90,6 +92,7 @@ public class AlbumActivity2 extends ActionBarActivity {
         albumsSorted = GalleryFragment.albumsSorted;
 
         photos = albumsSorted.get(AlbummID).photos;
+        photos2 = photos;
     }
 
     private void initAdapter() {
@@ -169,16 +172,16 @@ public class AlbumActivity2 extends ActionBarActivity {
     }
 
     private void refreshData() {
-        if (!photos.isEmpty()) {
+        if (photos != null && !photos.isEmpty()) {
             isMultiSelectionMode = false;
             photos = new ArrayList<>();
             albumsSorted = GalleryFragment.albumsSorted;
-            if (albumsSorted.isEmpty()) {
+            if (photos2 != null && photos2.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
-                int size = GalleryFragment.albumsSorted.get(AlbummID).photos.size();
+                int size = photos2.size();
                 Log.e("RefreshSize :", size + "");
-                photos.addAll(GalleryFragment.albumsSorted.get(AlbummID).photos);
+                photos.addAll(photos2);
             }
             mAdapter.setItems(photos, mContext, true);
             for (PhoneMediaControl.PhotoEntry photo : photos) {
@@ -233,7 +236,8 @@ public class AlbumActivity2 extends ActionBarActivity {
                                     getApplicationContext().deleteFile(fDelete.getName());
                                 }
                             }
-                            //photos2.remove(i);
+                            photos.remove(i);
+                            photos2.remove(i);
                         } else {
                             Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
                         }

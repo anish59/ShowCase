@@ -39,6 +39,13 @@ public class GalleryFragment extends Fragment {
     private int itemWidth = 100;
     private ListAdapter listAdapter;
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            LoadAllAlbum();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
