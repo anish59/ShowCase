@@ -28,24 +28,18 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
     private DisplayImageOptions options;
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private OnItemClicked onItemClicked;
-    private boolean isRemoveFirstPostionBackground =false;
+    private boolean isRemoveFirstPostionBackground = false;
 
     public CameraFragmentAdapter(Context context, ArrayList<PhoneMediaControl.PhotoEntry> photos, OnItemClicked onItemClicked) {
         this.context = context;
         this.photos = photos;
         this.onItemClicked = onItemClicked;
     }
-  /* options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.nophotos)
-                .showImageForEmptyUri(R.drawable.nophotos)
-                .showImageOnFail(R.drawable.nophotos).cacheInMemory(true)
-                .cacheOnDisc(true).considerExifParams(true).build();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));*/
 
     public void setItems(ArrayList<PhoneMediaControl.PhotoEntry> photos, Context context, boolean isRemoveFirstPostionBackground) {
         this.photos = photos;
         this.context = context;
-        this.isRemoveFirstPostionBackground=isRemoveFirstPostionBackground;
+        this.isRemoveFirstPostionBackground = isRemoveFirstPostionBackground;
         notifyDataSetChanged();
     }
 
@@ -61,35 +55,34 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
         PhoneMediaControl.PhotoEntry mPhotoEntry = photos.get(position);
         String path = mPhotoEntry.path;
 
-            if (path != null && !path.equals("")) {
-    //            ImageLoader.getInstance().displayImage("file://" + path, holder.imgCamPic,options);
-                Glide.with(context).load("file://" + path)
-                        .centerCrop()
-                        .placeholder(R.drawable.nophotos)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .into(holder.imgCamPic);
-            }
-
-            if (isRemoveFirstPostionBackground) {
-                holder.itemImgFrame.setBackgroundResource(0);
-            }
-
-            holder.itemImgFrame.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onItemClicked.onClick(position, view);
-                }
-            });
-            holder.itemImgFrame.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    onItemClicked.onLongClick(position, view);
-
-                    return false;
-                }
-            });
+        if (path != null && !path.equals("")) {
+            //            ImageLoader.getInstance().displayImage("file://" + path, holder.imgCamPic,options);
+            Glide.with(context).load("file://" + path)
+                    .centerCrop()
+                    .placeholder(R.drawable.nophotos)
+                    .crossFade()
+                    .into(holder.imgCamPic);
         }
+
+        if (isRemoveFirstPostionBackground) {
+            holder.itemImgFrame.setBackgroundResource(0);
+        }
+
+        holder.itemImgFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClicked.onClick(position, view);
+            }
+        });
+        holder.itemImgFrame.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onItemClicked.onLongClick(position, view);
+
+                return false;
+            }
+        });
+    }
 
 
     @Override

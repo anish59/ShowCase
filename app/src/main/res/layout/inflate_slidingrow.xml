@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/transparent" >
+    android:background="@android:color/transparent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:layout_marginTop="10dp" >
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:id="@+id/inflate_imgLogo"
@@ -22,15 +21,15 @@
             android:id="@+id/inflate_textLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@+id/inflate_imgLogo"
+            android:layout_toRightOf="@+id/inflate_imgLogo"
             android:text="Gallary"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/inflate_imgLogo"
-            android:layout_toEndOf="@+id/inflate_imgLogo"
-            android:layout_marginStart="15dp" />
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>

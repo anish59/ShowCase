@@ -108,10 +108,19 @@ public class PhoneMediaVideoController {
 		public String displayname;
 		public String duration;
 		public Bitmap curThumb;
-		
+		public boolean isSelected;
+
+		public boolean getSelected() {
+			return isSelected;
+		}
+
+		public void setSelected(boolean selected) {
+			isSelected = selected;
+		}
+
 		public VideoDetails(int imageId, int bucketId, String bucketName,
-                            String path, long dateTaken, String resolution, String size,
-                            String displayname, String duration, Bitmap curThumb) {
+							String path, long dateTaken, String resolution, String size,
+							String displayname, String duration, Bitmap curThumb) {
 			this.imageId = imageId;
 			this.bucketId = bucketId;
 			this.bucketName = bucketName;

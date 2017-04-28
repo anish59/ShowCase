@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     }
 
     private void initializeActionBar() {
-        UIHelper.initToolbar(MainActivity.this, toolbar, "");
+        setToolBar(toolbar, "All Images", "");
         slidingList = (ListView) findViewById(R.id.sliding_listView);
         mSlideMenuAdapter = new SlideMenuAdapter(mContext, getSlideList());
         mSlideMenuAdapter.setSlidemenuadapterinterface(this);
@@ -139,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
         mDrawerToggle.syncState();
 
 
+    }
+
+    public void setToolBar(Toolbar toolbar, String title, String subTitle) {
+        UIHelper.initToolbar(MainActivity.this, toolbar, title + subTitle);
     }
 
     private void closeDrware() {

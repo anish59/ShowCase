@@ -17,17 +17,19 @@ import com.showcase.R;
 
 public class UIHelper {
     public static void initToolbar(final AppCompatActivity activity, Toolbar toolbar, String title) {
-        toolbar.setTitle(title);
-        toolbar.setTitleTextColor(Color.WHITE);
-        activity.setSupportActionBar(toolbar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (toolbar != null) {
+            toolbar.setTitle(title);
+            toolbar.setTitleTextColor(Color.WHITE);
+            activity.setSupportActionBar(toolbar);
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UIHelper.fireIntent(activity, false);
-            }
-        });
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UIHelper.fireIntent(activity, false);
+                }
+            });
+        }
     }
 
     public static void fireIntent(Activity context, boolean isNewActivity) {
@@ -38,6 +40,7 @@ public class UIHelper {
             context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
+
     public static void fireIntent(Context context, Intent intent, boolean isNewActivity) {
         Activity activity = (Activity) context;
         context.startActivity(intent);

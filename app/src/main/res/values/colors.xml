@@ -6,4 +6,5 @@
     <color name="wrongPatternColor">#FF2525</color>
     <color name="imageSelectionColor">#802B2B2B</color>
     <color name="black_overlay">#66000000</color>
+    <color name="black_overlay_trans">#FF555555</color>
 </resources>

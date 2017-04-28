@@ -1,8 +1,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp"
     android:layout_gravity="top"
-    android:background="#ff000000" >
+    android:background="#ff000000"
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/media_photo_image"
@@ -16,7 +17,7 @@
         android:layout_height="28dp"
         android:layout_gravity="bottom"
         android:background="#7f000000"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/album_name"

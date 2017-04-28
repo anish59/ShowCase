@@ -9,9 +9,9 @@
 #todo: 1. Delete functionality remaining.
 #Todo: 2. Remove all logs with debug logs.
 #Todo: 3. Ask for permission before deleting images.
-#Todo: 4. Implement same functionality in GalleryFragment and VideoFragment.(Major Task)
+#Todo: 4. Implement same functionality in GalleryFragment and VideoFragment.(Major Task)//done
 #Todo: 5. notify image adapters on onResume for delete.
-#Todo: 6. give Share and Delete functionality from PhotoPreviewActivity.
+#Todo: 6. give Share and Delete functionality from PhotoPreviewActivity.//delete is remaining
 
 //extra but needed
 #Todo: 7. Give option for opening camera from app itself.

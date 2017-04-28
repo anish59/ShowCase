@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.showcase.MainActivity;
 import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.CameraFragmentAdapter;
@@ -53,6 +55,7 @@ public class CameraFragment2 extends Fragment {
     private ProgressListener progressListener;
     private MenuItem itemDeselect, itemShare, itemDelete;
     private ArrayList<PhoneMediaControl.PhotoEntry> photos2;
+//    private Toolbar toolbar;
 
 
     @Override
@@ -66,6 +69,7 @@ public class CameraFragment2 extends Fragment {
         /** Inflating the layout for this fragment **/
         mContext = this.getActivity();
         View v = inflater.inflate(R.layout.fragment_gallery2, null);
+//        toolbar = (Toolbar) v.getRootView().getRootView().findViewById(R.id.tool_bar);
         initializeView(v);
         return v;
     }
@@ -128,6 +132,7 @@ public class CameraFragment2 extends Fragment {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
+//        new MainActivity().setToolBar(toolbar, "Camera", "(" + photos.size() + ")");
     }
 
     private void setImageSelection(View view, int position) {
@@ -155,6 +160,10 @@ public class CameraFragment2 extends Fragment {
             itemDeselect.setVisible(true);
             itemShare.setVisible(true);
             itemDelete.setVisible(true);
+        } else {
+            itemDeselect.setVisible(false);
+            itemShare.setVisible(false);
+            itemDelete.setVisible(false);
         }
     }
 

@@ -26,6 +26,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
     private ArrayList<PhoneMediaVideoController.VideoDetails> arrayVideoDetails;
     private OnItemClickedListener onItemClickedListener;
     private VideoThumbleLoader thumbleLoader;
+    private boolean isRemoveFirstPostionBackground;
 
     public VideoAdapter(Context context, ArrayList<PhoneMediaVideoController.VideoDetails> arrayVideoDetails, OnItemClickedListener onItemClickedListener) {
         this.context = context;
@@ -34,11 +35,18 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         this.thumbleLoader = new VideoThumbleLoader(context);
     }
 
+    public void setItems(ArrayList<PhoneMediaVideoController.VideoDetails> arrayVideoDetails, boolean isRemoveFirstPostionBackground) {
+        this.arrayVideoDetails = arrayVideoDetails;
+        this.isRemoveFirstPostionBackground = isRemoveFirstPostionBackground;
+        notifyDataSetChanged();
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.photo_picker_album_layout, parent, false);
         return new MyViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
@@ -47,13 +55,18 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         thumbleLoader.DisplayImage("" + mVideoDetails.imageId, context, holder.img, null);
         holder.txtTitle.setText(mVideoDetails.displayname);
         final String videoPath = mVideoDetails.path;
+
+        if (isRemoveFirstPostionBackground) {
+            holder.img.getRootView().setBackgroundResource(0);
+        }
+
         holder.img.getRootView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClickedListener.onClick(videoPath, v, position);
             }
         });
-        holder.img.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.img.getRootView().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 onItemClickedListener.onLongClick(videoPath, v, position);
@@ -80,6 +93,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
             txtCount = (TextView) itemView.findViewById(R.id.album_count);
         }
     }
+
 
     public interface OnItemClickedListener {
         void onClick(String videoPath, View v, int position);
