@@ -46,7 +46,7 @@ public class FunctionHelper {
     }
 
     public static void logE(String tag, String print) {
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             Log.e(tag, print);
         }
     }

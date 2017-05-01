@@ -3,7 +3,9 @@ package com.showcase.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,13 +24,13 @@ import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
-import com.showcase.helper.FunctionHelper;
 
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
 
     private TextView emptyView;
+    Context context;
     private GridView mView;
     private Context mContext;
 
@@ -39,13 +41,10 @@ public class GalleryFragment extends Fragment {
     private int itemWidth = 100;
     private ListAdapter listAdapter;
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            LoadAllAlbum();
-        }
+    public GalleryFragment() {
+        loadAllAlbum();
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,26 +87,38 @@ public class GalleryFragment extends Fragment {
             }
         });
 
-        LoadAllAlbum();
+        // loadAllAlbum();
     }
 
 
-    private void LoadAllAlbum() {
+    private void loadAllAlbum() {
         PhoneMediaControl mediaControl = new PhoneMediaControl();
         mediaControl.setLoadalbumphoto(new PhoneMediaControl.loadAlbumPhoto() {
 
             @Override
             public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted_) {
-                albumsSorted = new ArrayList<PhoneMediaControl.AlbumEntry>(albumsSorted_);
+                albumsSorted = new ArrayList<PhoneMediaControl.AlbumEntry>();
+                albumsSorted = albumsSorted_;
                 if (mView != null && mView.getEmptyView() == null) {
                     mView.setEmptyView(null);
                 }
+
                 if (listAdapter != null) {
                     listAdapter.notifyDataSetChanged();
                 }
             }
         });
         mediaControl.loadGalleryPhotosAlbums(mContext, 0);
+    }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
 
@@ -175,11 +186,8 @@ public class GalleryFragment extends Fragment {
             PhoneMediaControl.AlbumEntry albumEntry = albumsSorted.get(i);
             final ImageView imageView = (ImageView) view
                     .findViewById(R.id.media_photo_image);
-            if (albumEntry.coverPhoto != null
-                    && albumEntry.coverPhoto.path != null) {
-                imageLoader.displayImage(
-                        "file://" + albumEntry.coverPhoto.path, imageView,
-                        options);
+            if (albumEntry.coverPhoto != null && albumEntry.coverPhoto.path != null) {
+                imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
             } else {
                 imageView.setImageResource(R.drawable.nophotos);
             }

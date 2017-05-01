@@ -28,6 +28,7 @@ import com.showcase.helper.UIHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AlbumActivity2 extends ActionBarActivity {
 
@@ -171,6 +172,20 @@ public class AlbumActivity2 extends ActionBarActivity {
         itemDelete.setVisible(false);
     }
 
+    private void refreshAfterDelete() {
+        for (PhoneMediaControl.PhotoEntry photo : photos) {
+            photo.setSelected(false);
+        }
+       /* if (photos != null && !photos.isEmpty()) {
+            isMultiSelectionMode = false;
+            for (PhoneMediaControl.PhotoEntry photo : photos) {
+                photo.setSelected(false);
+            }
+            Log.e("RemainingPics(C): ", "" + photos.size());
+            mAdapter.setItems(photos, mContext, true);
+        }*/
+    }
+
     private void refreshData() {
         if (photos != null && !photos.isEmpty()) {
             isMultiSelectionMode = false;
@@ -186,6 +201,9 @@ public class AlbumActivity2 extends ActionBarActivity {
             mAdapter.setItems(photos, mContext, true);
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 photo.setSelected(false);
+            }
+            for (PhoneMediaControl.PhotoEntry photoEntry : photos2) {
+                photoEntry.setSelected(false);
             }
         }
     }
@@ -217,9 +235,10 @@ public class AlbumActivity2 extends ActionBarActivity {
             progressListener = new ProgressBarHelper(mContext, "Please Wait..");
             progressListener.showProgressDialog();
             if (isMultiSelectionMode && !photos.isEmpty()) {
-                int picsSize = photos.size();
-                for (int i = 0; i < picsSize; i++) {
+                Log.e("RemainingPics(a): ", "" + photos.size());
+                for (int i = photos.size() - 1; i >= 0; i--) {
                     if (photos.get(i).isSelected) {
+                        FunctionHelper.logE("selected: ", i + "> " + photos.get(i).path);
                         File fDelete = new File(photos.get(i).path);
                         Log.e("path:", " " + i + ": " + photos.get(i).path);
                         if (fDelete.exists()) {
@@ -235,24 +254,41 @@ public class AlbumActivity2 extends ActionBarActivity {
                                 if (fDelete.exists()) {
                                     getApplicationContext().deleteFile(fDelete.getName());
                                 }
+
                             }
+
+//                            photos.remove(i);
                             photos.remove(i);
-                            photos2.remove(i);
+                            mAdapter.notifyDataSetChanged();
+                            //photos2.remove(i);
                         } else {
                             Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
                         }
                     }
                 }
-
+                /*if (!removedPositions.isEmpty()) {
+                    for (int removedPosition : removedPositions) {
+                        photos.remove(removedPosition);
+                        mAdapter.notifyItemRemoved(removedPosition);
+                    }
+                    Log.e("RemainingPics(b): ", "" + photos.size());
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         progressListener.hidProgressDialog();
         FunctionHelper.callBroadCast(mContext);
-        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
-
+        refreshAfterDelete();
+        itemDeselect.setVisible(false);
+        itemShare.setVisible(false);
+        itemDelete.setVisible(false);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        new GalleryFragment();
+    }
 }
