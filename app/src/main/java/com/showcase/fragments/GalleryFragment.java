@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 public class GalleryFragment extends Fragment {
 
     private TextView emptyView;
-    Context context;
+
     private GridView mView;
     private Context mContext;
 
@@ -124,17 +125,17 @@ public class GalleryFragment extends Fragment {
 
     private class ListAdapter extends BaseFragmentAdapter {
         private Context mContext;
-        private DisplayImageOptions options;
+        //        private DisplayImageOptions options;
         private ImageLoader imageLoader = ImageLoader.getInstance();
 
         public ListAdapter(Context context) {
             mContext = context;
-            options = new DisplayImageOptions.Builder()
+         /*   options = new DisplayImageOptions.Builder()
                     .showImageOnLoading(R.drawable.nophotos)
                     .showImageForEmptyUri(R.drawable.nophotos)
                     .showImageOnFail(R.drawable.nophotos).cacheInMemory(true)
                     .cacheOnDisc(true).considerExifParams(true).build();
-            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));*/
         }
 
         @Override
@@ -187,7 +188,12 @@ public class GalleryFragment extends Fragment {
             final ImageView imageView = (ImageView) view
                     .findViewById(R.id.media_photo_image);
             if (albumEntry.coverPhoto != null && albumEntry.coverPhoto.path != null) {
-                imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
+                // imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
+                Glide.with(getActivity()).load("file://" + albumEntry.coverPhoto.path)
+                        .centerCrop()
+                        .placeholder(R.drawable.nophotos)
+                        .crossFade()
+                        .into(imageView);
             } else {
                 imageView.setImageResource(R.drawable.nophotos);
             }
