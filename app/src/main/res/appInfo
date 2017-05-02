@@ -12,6 +12,7 @@
 #Todo: 4. Implement same functionality in GalleryFragment and VideoFragment.(Major Task)//done
 #Todo: 5. notify image adapters on onResume for delete.
 #Todo: 6. give Share and Delete functionality from PhotoPreviewActivity.//delete is remaining
+#Todo: 7: Implement pull to refresh.
 
 //extra but needed
 #Todo: 7. Give option for opening camera from app itself.

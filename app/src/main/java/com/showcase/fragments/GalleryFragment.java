@@ -46,6 +46,11 @@ public class GalleryFragment extends Fragment {
         loadAllAlbum();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadAllAlbum();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

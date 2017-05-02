@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -170,12 +171,18 @@ public class AlbumActivity2 extends ActionBarActivity {
         itemDeselect.setVisible(false);
         itemShare.setVisible(false);
         itemDelete.setVisible(false);
+
     }
 
     private void refreshAfterDelete() {
+        isMultiSelectionMode = false;
         for (PhoneMediaControl.PhotoEntry photo : photos) {
             photo.setSelected(false);
         }
+        itemDeselect.setVisible(false);
+        itemShare.setVisible(false);
+        itemDelete.setVisible(false);
+        initializeActionBar();
        /* if (photos != null && !photos.isEmpty()) {
             isMultiSelectionMode = false;
             for (PhoneMediaControl.PhotoEntry photo : photos) {
@@ -189,22 +196,26 @@ public class AlbumActivity2 extends ActionBarActivity {
     private void refreshData() {
         if (photos != null && !photos.isEmpty()) {
             isMultiSelectionMode = false;
-            photos = new ArrayList<>();
-            albumsSorted = GalleryFragment.albumsSorted;
+//            photos = new ArrayList<>();
+           /* albumsSorted = GalleryFragment.albumsSorted;
             if (photos2 != null && photos2.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
                 int size = photos2.size();
                 Log.e("RefreshSize :", size + "");
                 photos.addAll(photos2);
+            }*/
+            if (photos != null && !photos.isEmpty()) {
+                mAdapter.setItems(photos, mContext, true);
+            } else {
+                Toast.makeText(mContext, "No image found.", Toast.LENGTH_SHORT).show();
             }
-            mAdapter.setItems(photos, mContext, true);
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 photo.setSelected(false);
             }
-            for (PhoneMediaControl.PhotoEntry photoEntry : photos2) {
+           /* for (PhoneMediaControl.PhotoEntry photoEntry : photos2) {
                 photoEntry.setSelected(false);
-            }
+            }*/
         }
     }
 
@@ -277,18 +288,19 @@ public class AlbumActivity2 extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         progressListener.hidProgressDialog();
         FunctionHelper.callBroadCast(mContext);
-        refreshAfterDelete();
-        itemDeselect.setVisible(false);
-        itemShare.setVisible(false);
-        itemDelete.setVisible(false);
+        //        refreshAfterDelete();
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        isDeselectIconVisible = false;
+        initializeActionBar();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        new GalleryFragment();
+        //  new GalleryFragment();
     }
 }
