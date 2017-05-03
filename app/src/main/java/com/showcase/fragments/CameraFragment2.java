@@ -2,16 +2,12 @@ package com.showcase.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.showcase.MainActivity;
 import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.CameraFragmentAdapter;
@@ -221,7 +216,7 @@ public class CameraFragment2 extends Fragment {
         }
         progressListener.hidProgressDialog();
         mAdapter.setItems(photos, getActivity(), true);
-        FunctionHelper.callBroadCast(getActivity());
+//        FunctionHelper.callBroadCast(getActivity(), fDelete);
         imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
 
     }

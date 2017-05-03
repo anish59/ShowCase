@@ -1,11 +1,16 @@
 package com.showcase;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AlbumActivity2 extends ActionBarActivity {
+public class AlbumActivity2 extends AppCompatActivity {
 
     private Context mContext = AlbumActivity2.this;
     private AlbumAdapter mAdapter;
@@ -253,9 +258,12 @@ public class AlbumActivity2 extends ActionBarActivity {
                         File fDelete = new File(photos.get(i).path);
                         Log.e("path:", " " + i + ": " + photos.get(i).path);
                         if (fDelete.exists()) {
-                            Log.e("gettingDeleted: ", "" + fDelete.delete() + " : " + fDelete.getAbsolutePath());
 
-                            fDelete.delete();
+                            deleteWithProjection(fDelete);
+
+                            if (fDelete.exists()) {
+                                fDelete.delete();
+                            }
                             if (fDelete.exists()) {
                                 try {
                                     fDelete.getCanonicalFile().delete();
@@ -266,14 +274,16 @@ public class AlbumActivity2 extends ActionBarActivity {
                                     getApplicationContext().deleteFile(fDelete.getName());
                                 }
 
+
                             }
 
 //                            photos.remove(i);
                             photos.remove(i);
                             mAdapter.notifyDataSetChanged();
+                            FunctionHelper.callBroadCast(mContext, fDelete);
                             //photos2.remove(i);
                         } else {
-                            Log.e("fDelete: ", "" + fDelete.delete() + " : " + fDelete.getAbsoluteFile());
+                            Log.e("fDelete: ", " : " + fDelete.getAbsoluteFile());
                         }
                     }
                 }
@@ -290,11 +300,34 @@ public class AlbumActivity2 extends ActionBarActivity {
         }
 
         progressListener.hidProgressDialog();
-        FunctionHelper.callBroadCast(mContext);
         //        refreshAfterDelete();
         imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
         isDeselectIconVisible = false;
         initializeActionBar();
+    }
+
+    private void deleteWithProjection(File fDelete) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{fDelete.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = mContext.getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+            FunctionHelper.logE("fnf: ", "File not found in media store DB");
+        }
+        c.close();
     }
 
     @Override
@@ -303,4 +336,5 @@ public class AlbumActivity2 extends ActionBarActivity {
         finish();
         //  new GalleryFragment();
     }
+
 }

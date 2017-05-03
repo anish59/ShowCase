@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.showcase.R;
 import com.showcase.componentHelper.PhoneMediaVideoController;
 import com.showcase.componentHelper.VideoThumbleLoader;
@@ -52,7 +53,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         PhoneMediaVideoController.VideoDetails mVideoDetails = arrayVideoDetails.get(position);
         holder.txtTitle.setText(mVideoDetails.displayname);
-        thumbleLoader.DisplayImage("" + mVideoDetails.imageId, context, holder.img, null);
+//        thumbleLoader.DisplayImage("" + mVideoDetails.imageId, context, holder.img, null);
+        Glide.with(context).load(mVideoDetails.path)
+                .centerCrop()
+                .placeholder(R.drawable.nophotos)
+                .crossFade()
+                .thumbnail(0.5f)
+                .into(holder.img);
         holder.txtTitle.setText(mVideoDetails.displayname);
         final String videoPath = mVideoDetails.path;
 

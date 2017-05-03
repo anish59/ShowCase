@@ -12,6 +12,8 @@ import android.util.Config;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import java.io.File;
+
 /**
  * Created by ANISH on 23-04-2017.
  */
@@ -51,23 +53,15 @@ public class FunctionHelper {
         }
     }
 
-    public static void callBroadCast(Context context) {
-        if (Build.VERSION.SDK_INT >= 14) {
-            Log.e("-->", " >= 14");
-            MediaScannerConnection.scanFile(context, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                /*
-                 *   (non-Javadoc)
-                 * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
-                 */
-                public void onScanCompleted(String path, Uri uri) {
-                    Log.e("ExternalStorage", "Scanned " + path + ":");
-                    Log.e("ExternalStorage", "-> uri=" + uri);
-                }
-            });
+    public static void callBroadCast(Context context, File fDelete) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            final Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            final Uri contentUri = Uri.fromFile(fDelete);//outputFile
+            scanIntent.setData(contentUri);
+            context.sendBroadcast(scanIntent);
         } else {
-            Log.e("-->", " < 14");
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-                    Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+            final Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory()));
+            context.sendBroadcast(intent);
         }
     }
 }

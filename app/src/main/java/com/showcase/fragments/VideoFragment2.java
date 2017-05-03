@@ -1,9 +1,13 @@
 package com.showcase.fragments;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,8 +26,13 @@ import com.showcase.MainActivity;
 import com.showcase.R;
 import com.showcase.adapter.VideoAdapter;
 import com.showcase.componentHelper.PhoneMediaVideoController;
+import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.ProgressBarHelper;
+import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class VideoFragment2 extends Fragment implements PhoneMediaVideoController.loadAllVideoMediaInterface {
@@ -36,8 +45,15 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
     private boolean isDeselectIconVisible = false;
     private boolean isMultiSelectionMode = false;
     private int firstSelectedPosition;
+    private ProgressListener progressListener;
 //    private Toolbar toolbar;
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +68,7 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
         View v = inflater.inflate(R.layout.fragment_gallery2, null);
         recyclerView = (RecyclerView) v.getRootView().getRootView().findViewById(R.id.rvImages);
 //        toolbar = (Toolbar) v.getRootView().findViewById(R.id.tool_bar);
-        loadData();
+
         initAdapter();
         return v;
     }
@@ -142,7 +158,7 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
                 shareVideos();
                 break;
             case R.id.action_deleteImages:
-                //deleteImages();
+                deleteVideos();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -193,17 +209,90 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
         itemDelete.setVisible(false);
     }
 
+    private void deleteVideos() {
+
+        try {
+            progressListener = new ProgressBarHelper(mContext, "Please Wait..");
+            progressListener.showProgressDialog();
+            if (isMultiSelectionMode && !videos.isEmpty()) {
+                Log.e("RemainingPics(a): ", "" + videos.size());
+                for (int i = videos.size() - 1; i >= 0; i--) {
+                    if (videos.get(i).isSelected) {
+                        FunctionHelper.logE("selected: ", i + "> " + videos.get(i).path);
+                        File fDelete = new File(videos.get(i).path);
+                        Log.e("path:", " " + i + ": " + videos.get(i).path);
+                        if (fDelete.exists()) {
+
+                            deleteWithProjection(fDelete);
+
+                            if (fDelete.exists()) {
+                                fDelete.delete();
+                            }
+                            if (fDelete.exists()) {
+                                try {
+                                    fDelete.getCanonicalFile().delete();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (fDelete.exists()) {
+                                    getActivity().deleteFile(fDelete.getName());
+                                }
+
+                            }
+
+//                            photos.remove(i);
+                            videos.remove(i);
+                            mAdapter.notifyDataSetChanged();
+                            FunctionHelper.callBroadCast(mContext, fDelete);
+                            //photos2.remove(i);
+                        } else {
+                            Log.e("fDelete: ", " : " + fDelete.getAbsoluteFile());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        progressListener.hidProgressDialog();
+        //        refreshAfterDelete();
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        isDeselectIconVisible = false;
+    }
+
+    private void deleteWithProjection(File fDelete) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Video.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Video.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{fDelete.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = mContext.getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Video.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+            FunctionHelper.logE("fnf: ", "File not found in media store DB");
+        }
+        c.close();
+    }
+
     private void refreshData() {
         if (!videos.isEmpty()) {
             isMultiSelectionMode = false;
-            videos = new ArrayList<>();
-
             for (PhoneMediaVideoController.VideoDetails video : videos) {
                 video.setSelected(false);
             }
-            loadData();
+            // loadData();
         }
     }
-
 
 }

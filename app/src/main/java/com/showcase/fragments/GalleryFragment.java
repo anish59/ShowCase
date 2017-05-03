@@ -16,10 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.showcase.AlbumActivity;
 import com.showcase.AlbumActivity2;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
@@ -42,10 +38,10 @@ public class GalleryFragment extends Fragment {
     private int itemWidth = 100;
     private ListAdapter listAdapter;
 
-    public GalleryFragment() {
-        loadAllAlbum();
-    }
-
+    /*   public GalleryFragment() {
+           loadAllAlbum();
+       }
+   */
     @Override
     public void onResume() {
         super.onResume();
@@ -117,30 +113,11 @@ public class GalleryFragment extends Fragment {
         mediaControl.loadGalleryPhotosAlbums(mContext, 0);
     }
 
-    @Override
-    public boolean getUserVisibleHint() {
-        return super.getUserVisibleHint();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-
     private class ListAdapter extends BaseFragmentAdapter {
         private Context mContext;
-        //        private DisplayImageOptions options;
-        private ImageLoader imageLoader = ImageLoader.getInstance();
 
         public ListAdapter(Context context) {
             mContext = context;
-         /*   options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(R.drawable.nophotos)
-                    .showImageForEmptyUri(R.drawable.nophotos)
-                    .showImageOnFail(R.drawable.nophotos).cacheInMemory(true)
-                    .cacheOnDisc(true).considerExifParams(true).build();
-            imageLoader.init(ImageLoaderConfiguration.createDefault(context));*/
         }
 
         @Override
@@ -198,6 +175,7 @@ public class GalleryFragment extends Fragment {
                         .centerCrop()
                         .placeholder(R.drawable.nophotos)
                         .crossFade()
+                        .skipMemoryCache(true)
                         .into(imageView);
             } else {
                 imageView.setImageResource(R.drawable.nophotos);

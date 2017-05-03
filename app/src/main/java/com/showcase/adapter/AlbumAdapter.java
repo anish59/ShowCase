@@ -62,6 +62,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
                     .crossFade()
                     .thumbnail(0.5f)
                     .into(holder.imgCamPic);
+
         }
 
         if (isRemoveFirstPostionBackground) {

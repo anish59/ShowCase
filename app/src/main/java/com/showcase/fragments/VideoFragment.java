@@ -131,7 +131,7 @@ public class VideoFragment extends Fragment implements PhoneMediaVideoController
 
             PhoneMediaVideoController.VideoDetails mVideoDetails = arrayVideoDetails.get(i);
             final String videoPath = mVideoDetails.path;
-            thumbleLoader.DisplayImage("" + mVideoDetails.imageId, mContext, mViewHolder.img, null);
+//            thumbleLoader.DisplayImage("" + mVideoDetails.imageId, mContext, mViewHolder.img, null);
             mViewHolder.txtTitle.setText(mVideoDetails.displayname);
 
             view.setOnClickListener(new OnClickListener() {

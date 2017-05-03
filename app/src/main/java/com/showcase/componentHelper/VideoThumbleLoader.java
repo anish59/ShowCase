@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
 import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 
@@ -48,6 +49,12 @@ public class VideoThumbleLoader {
             queuePhoto(url, _context, imageView, progressBar);
             imageView.setImageResource(stub_id);
         }
+        /*Glide.with(getActivity(_context)).load(imageView)
+                .centerCrop()
+                .placeholder(R.drawable.nophotos)
+                .crossFade()
+                .thumbnail(0.5f)
+                .into(holder.imgCamPic);*/
     }
 
     private void queuePhoto(String url, Context _context, ImageView imageView, ProgressBar progressBar) {

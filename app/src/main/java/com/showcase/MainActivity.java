@@ -187,10 +187,12 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
             case 0:
                 currentFragment = new GalleryFragment();
                 break;
-            case 1:
+            //Todo: if all runs well bring it alive
+            /*case 1:
                 currentFragment = new CameraFragment2();
-                break;
-            case 2:
+                break;*/
+
+            case 1:
                 currentFragment = new VideoFragment2();
                 break;
 
@@ -203,8 +205,8 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     /**
      * Slide Menu List Array.
      */
-    private String[] title = {"All Images", "Camera", "Video"};
-    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_camera_alt, R.drawable.ic_video_cam};
+    private String[] title = {"All Images", "Video"};
+    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_video_cam};
 
     private ArrayList<SlideData> getSlideList() {
         ArrayList<SlideData> arrayList = new ArrayList<SlideData>();
