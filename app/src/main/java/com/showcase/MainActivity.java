@@ -1,5 +1,6 @@
 package com.showcase;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,12 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.SlideMenuAdapter;
-import com.showcase.fragments.CameraFragment2;
 import com.showcase.fragments.GalleryFragment;
-import com.showcase.fragments.VideoFragment;
 import com.showcase.fragments.VideoFragment2;
+import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.UIHelper;
 import com.showcase.model.SlideData;
 
@@ -48,9 +50,27 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         mContext = MainActivity.this;
+        askForPermissions();
         initializeActionBar();
         initialCalling();
+    }
 
+    private void askForPermissions() {
+        FunctionHelper.setPermission(this, new String[]{
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        }, new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                //proceed
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "Action Unavailable", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     @Override

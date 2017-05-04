@@ -7,10 +7,14 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.compat.BuildConfig;
 import android.util.Config;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
 
@@ -63,5 +67,17 @@ public class FunctionHelper {
             final Intent intent = new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory()));
             context.sendBroadcast(intent);
         }
+    }
+
+    public static void setPermission(final Context context, @NonNull String[] permissions, PermissionListener permissionListene) {
+
+        if (permissions != null && permissions.length == 0 && permissionListene != null) {
+            return;
+        }
+        new TedPermission(context)
+                .setPermissionListener(permissionListene)
+                .setDeniedMessage("If you reject permission,you can not use this service\nPlease turn on permissions from settings")
+                .setPermissions(permissions)
+                .check();
     }
 }

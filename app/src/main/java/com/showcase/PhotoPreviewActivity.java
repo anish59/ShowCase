@@ -19,6 +19,7 @@ import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.fragments.GalleryFragment;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class PhotoPreviewActivity extends ActionBarActivity implements OnPageChangeListener {
@@ -80,15 +81,52 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
                 onBackPressed();
                 break;
             case R.id.action_shareImages:
-                PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
-                File file = new File(selectedImage.path);
-                Intent mShareIntent = new Intent(Intent.ACTION_SEND);
-                mShareIntent.setType("image/*");
-                mShareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                startActivity(Intent.createChooser(mShareIntent, "Share image"));
+                shareImage();
+                break;
+            case R.id.action_deleteImages:
+                // deleteImage();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteImage() { //todo: remaining to implement
+        PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
+        File file = new File(selectedImage.path);
+        if (file.exists()) {
+            file.delete();
+            if (file.exists()) {
+                try {
+                    file.getCanonicalFile().delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (file.exists()) {
+                    context.deleteFile(file.getName());
+                }
+
+            }
+            photos.remove(mViewPager.getCurrentItem());
+            mViewPager.removeViewAt(mViewPager.getCurrentItem());
+            if ((mViewPager.getCurrentItem() + 1) >= photos.size()) {
+                if (photos != null && !photos.isEmpty()) {
+                    mViewPager.setCurrentItem(0);
+                }
+            } else {
+                mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+            }
+            mPagerAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void shareImage() {
+        PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
+        File file = new File(selectedImage.path);
+        Intent mShareIntent = new Intent(Intent.ACTION_SEND);
+        mShareIntent.setType("image/*");
+        mShareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        startActivity(Intent.createChooser(mShareIntent, "Share image"));
     }
 
 

@@ -30,6 +30,7 @@ import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
+import com.showcase.helper.UIHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -158,7 +159,14 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
                 shareVideos();
                 break;
             case R.id.action_deleteImages:
-                deleteVideos();
+                UIHelper.dialogWithTwoOpt(getActivity(), "Are you sure want to delete it?", new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        if (isYes) {
+                            deleteVideos();
+                        }
+                    }
+                }, "yes", "no");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -239,7 +247,6 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
                                 }
 
                             }
-
 //                            photos.remove(i);
                             videos.remove(i);
                             mAdapter.notifyDataSetChanged();
@@ -291,6 +298,7 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
             for (PhoneMediaVideoController.VideoDetails video : videos) {
                 video.setSelected(false);
             }
+            mAdapter.setItems(videos, true);
             // loadData();
         }
     }

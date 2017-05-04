@@ -17,65 +17,67 @@ import com.showcase.R;
 
 public class PhotoPreview extends LinearLayout implements OnClickListener {
 
-	private ProgressBar pbLoading;
-	private GestureImageView ivContent;
-	private OnClickListener l;
+    private ProgressBar pbLoading;
+    private GestureImageView ivContent;
+    private OnClickListener l;
 
-	public PhotoPreview(Context context) {
-		super(context);
-		try {
-			LayoutInflater.from(context).inflate(R.layout.view_photopreview, this, true);
+    public PhotoPreview(Context context) {
+        super(context);
+        try {
+            LayoutInflater.from(context).inflate(R.layout.view_photopreview, this, true);
 
-			pbLoading = (ProgressBar) findViewById(R.id.pb_loading_vpp);
-			ivContent = (GestureImageView) findViewById(R.id.iv_content_vpp);
-			ivContent.setOnClickListener(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            pbLoading = (ProgressBar) findViewById(R.id.pb_loading_vpp);
+            ivContent = (GestureImageView) findViewById(R.id.iv_content_vpp);
+            ivContent.setOnClickListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public PhotoPreview(Context context, AttributeSet attrs, int defStyle) {
-		this(context);
-	}
+    public PhotoPreview(Context context, AttributeSet attrs, int defStyle) {
+        this(context);
+    }
 
-	public PhotoPreview(Context context, AttributeSet attrs) {
-		this(context);
-	}
+    public PhotoPreview(Context context, AttributeSet attrs) {
+        this(context);
+    }
 
-	public void loadImage(PhoneMediaControl.PhotoEntry mPhotoEntry) {
-		loadImage("file://" + mPhotoEntry.path);
-	}
+    public void loadImage(PhoneMediaControl.PhotoEntry mPhotoEntry) {
+        loadImage("file://" + mPhotoEntry.path);
+    }
 
-	private void loadImage(String path) {
-		try {
-			ImageLoader.getInstance().loadImage(path, new SimpleImageLoadingListener() {
-				@Override
-				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-					ivContent.setImageBitmap(loadedImage);
-					pbLoading.setVisibility(View.GONE);
-				}
+    private void loadImage(String path) {
+        try {
+            ImageLoader.getInstance().loadImage(path, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    ivContent.setImageBitmap(loadedImage);
+                    pbLoading.setVisibility(View.GONE);
+                }
 
-				@Override
-				public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-					ivContent.setImageDrawable(getResources().getDrawable(R.drawable.nophotos));
-					pbLoading.setVisibility(View.GONE);
-				}
-			});
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    ivContent.setImageDrawable(getResources().getDrawable(R.drawable.nophotos));
+                    pbLoading.setVisibility(View.GONE);
+                }
+            });
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public void setOnClickListener(OnClickListener l) {
-		this.l = l;
-	}
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        this.l = l;
+    }
 
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.iv_content_vpp && l != null)
-			l.onClick(ivContent);
-	};
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.iv_content_vpp && l != null)
+            l.onClick(ivContent);
+    }
+
+    ;
 
 }

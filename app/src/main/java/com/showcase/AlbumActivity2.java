@@ -7,15 +7,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +31,6 @@ import com.showcase.helper.UIHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AlbumActivity2 extends AppCompatActivity {
 
@@ -82,7 +78,14 @@ public class AlbumActivity2 extends AppCompatActivity {
                 shareImages();
                 break;
             case R.id.action_deleteImages:
-                deleteImages();
+                UIHelper.dialogWithTwoOpt(mContext, "Are you sure want to delete it?", new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        if (isYes) {
+                            deleteImages();
+                        }
+                    }
+                }, "yes", "no");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -151,6 +154,7 @@ public class AlbumActivity2 extends AppCompatActivity {
             photos.get(position).setSelected(true);
         }
         view.setBackgroundResource(photos.get(position).isSelected() ? R.drawable.img_selection_square : 0);
+//        view.setBackgroundResource(photos.get(position).isSelected() ? R.drawable.img_selection_square : 0);
     }
 
     @Override

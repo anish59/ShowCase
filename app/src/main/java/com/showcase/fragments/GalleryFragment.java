@@ -22,6 +22,7 @@ import com.showcase.ShowCaseApplication;
 import com.showcase.adapter.BaseFragmentAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
@@ -171,7 +172,12 @@ public class GalleryFragment extends Fragment {
                     .findViewById(R.id.media_photo_image);
             if (albumEntry.coverPhoto != null && albumEntry.coverPhoto.path != null) {
                 // imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
-                Glide.with(getActivity()).load("file://" + albumEntry.coverPhoto.path)
+ /*               Glide.with(getActivity()).load("file://" + albumEntry.coverPhoto.path)
+                        .centerCrop()
+                        .placeholder(R.drawable.nophotos)
+                        .crossFade()
+                        .into(imageView);*/
+                Glide.with(getActivity()).load(new File(albumEntry.coverPhoto.path))
                         .centerCrop()
                         .placeholder(R.drawable.nophotos)
                         .crossFade()
