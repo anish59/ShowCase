@@ -230,7 +230,7 @@ public class AlbumActivity2 extends AppCompatActivity {
 
     private void shareImages() {
 
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setAction(Intent.ACTION_SEND_MULTIPLE);
         intent.putExtra(Intent.EXTRA_SUBJECT, "Sharing Images");
         intent.setType("image/jpeg"); /* This is sharing jpeg images. */
@@ -244,6 +244,7 @@ public class AlbumActivity2 extends AppCompatActivity {
             }
 
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+            intent = Intent.createChooser(intent, "Share with...");
             startActivity(intent);
             imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
         }
