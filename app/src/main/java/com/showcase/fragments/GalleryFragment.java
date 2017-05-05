@@ -168,8 +168,7 @@ public class GalleryFragment extends Fragment {
             view.setLayoutParams(params);
 
             PhoneMediaControl.AlbumEntry albumEntry = albumsSorted.get(i);
-            final ImageView imageView = (ImageView) view
-                    .findViewById(R.id.media_photo_image);
+            final ImageView imageView = (ImageView) view.findViewById(R.id.media_photo_image);
             if (albumEntry.coverPhoto != null && albumEntry.coverPhoto.path != null) {
                 // imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
  /*               Glide.with(getActivity()).load("file://" + albumEntry.coverPhoto.path)

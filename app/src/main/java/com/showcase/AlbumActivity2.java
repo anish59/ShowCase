@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.showcase.adapter.AlbumAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.fragments.GalleryFragment;
+import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
@@ -99,7 +100,7 @@ public class AlbumActivity2 extends AppCompatActivity {
         Bundle mBundle = getIntent().getExtras();
         nameAlbum = mBundle.getString("Key_Name");
         AlbummID = Integer.parseInt(mBundle.getString("Key_ID"));
-        albumsSorted = GalleryFragment.albumsSorted;
+        albumsSorted = GalleryFragment2.albumsSorted;
 
         photos = albumsSorted.get(AlbummID).photos;
         photos2 = photos;
@@ -232,14 +233,14 @@ public class AlbumActivity2 extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Sharing Images");
+        /*intent.putExtra(Intent.EXTRA_SUBJECT, "Share Image");*/
         intent.setType("image/jpeg"); /* This is sharing jpeg images. */
 
         ArrayList<Uri> files = new ArrayList<>();
         if (isMultiSelectionMode && !photos.isEmpty()) {
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 if (photo.isSelected()) {
-                    files.add(Uri.parse(photo.path));
+                    files.add(Uri.parse("file:///" + photo.path));
                 }
             }
 

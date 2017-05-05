@@ -124,12 +124,23 @@ public class PhoneMediaControl {
         public int bucketId;
         public String bucketName;
         public PhotoEntry coverPhoto;
+        public Boolean isSelected = false;
+
+        public Boolean isSelected() {
+            return isSelected;
+        }
+
+        public void setSelected(Boolean selected) {
+            isSelected = selected;
+        }
+
         public ArrayList<PhotoEntry> photos = new ArrayList<PhotoEntry>();
 
         public AlbumEntry(int bucketId, String bucketName, PhotoEntry coverPhoto) {
             this.bucketId = bucketId;
             this.bucketName = bucketName;
             this.coverPhoto = coverPhoto;
+
         }
 
         public void addPhoto(PhotoEntry photoEntry) {

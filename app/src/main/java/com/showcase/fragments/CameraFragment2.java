@@ -81,11 +81,11 @@ public class CameraFragment2 extends Fragment {
         });
         emptyView.setText("NoPhotos");
 
-        albumsSorted = GalleryFragment.albumsSorted;
+        albumsSorted = GalleryFragment2.albumsSorted;
         if (albumsSorted.isEmpty()) {
             Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
         } else {
-            photos = GalleryFragment.albumsSorted.get(0).photos;
+            photos = GalleryFragment2.albumsSorted.get(0).photos;
 //            photos2 = GalleryFragment.albumsSorted.get(0).photos;
         }
         initAdapter();
@@ -273,13 +273,13 @@ public class CameraFragment2 extends Fragment {
         if (!photos.isEmpty()) {
             isMultiSelectionMode = false;
             photos = new ArrayList<>();
-            albumsSorted = GalleryFragment.albumsSorted;
+            albumsSorted = GalleryFragment2.albumsSorted;
             if (albumsSorted.isEmpty()) {
                 Toast.makeText(mContext, "No Image Found", Toast.LENGTH_SHORT).show();
             } else {
-                int size = GalleryFragment.albumsSorted.get(0).photos.size();
+                int size = GalleryFragment2.albumsSorted.get(0).photos.size();
                 Log.e("RefreshSize :", size + "");
-                photos.addAll(GalleryFragment.albumsSorted.get(0).photos);
+                photos.addAll(GalleryFragment2.albumsSorted.get(0).photos);
             }
             for (PhoneMediaControl.PhotoEntry photo : photos) {
                 photo.setSelected(false);

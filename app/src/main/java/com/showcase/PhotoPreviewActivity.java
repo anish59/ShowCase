@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.fragments.GalleryFragment;
+import com.showcase.fragments.GalleryFragment2;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         folderPosition = mBundle.getInt("Key_FolderID");
         current = mBundle.getInt("Key_ID");
 
-        photos = GalleryFragment.albumsSorted.get(folderPosition).photos;
+        photos = GalleryFragment2.albumsSorted.get(folderPosition).photos;
 
         mViewPager = (ViewPager) findViewById(R.id.vp_base_app);
         mViewPager.setOnPageChangeListener(this);

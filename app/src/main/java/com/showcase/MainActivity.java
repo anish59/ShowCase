@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.SlideMenuAdapter;
 import com.showcase.fragments.GalleryFragment;
+import com.showcase.fragments.GalleryFragment2;
 import com.showcase.fragments.VideoFragment2;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.UIHelper;
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     private void getFragment(int postion) {
         switch (postion) {
             case 0:
-                currentFragment = new GalleryFragment();
+                currentFragment = new GalleryFragment2();
                 break;
             //Todo: if all runs well bring it alive
             /*case 1:

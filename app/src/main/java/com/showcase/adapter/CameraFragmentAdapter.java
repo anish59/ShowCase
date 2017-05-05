@@ -25,8 +25,6 @@ public class CameraFragmentAdapter extends RecyclerView.Adapter<CameraFragmentAd
 
     private Context context;
     private ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-    private DisplayImageOptions options;
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private OnItemClicked onItemClicked;
     private boolean isRemoveFirstPostionBackground = false;
 

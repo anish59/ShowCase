@@ -1,41 +1,61 @@
 package com.showcase.fragments;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.showcase.AlbumActivity2;
+import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
-import com.showcase.ShowCaseApplication;
-import com.showcase.adapter.BaseFragmentAdapter;
+import com.showcase.adapter.GalleryAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.ProgressBarHelper;
+import com.showcase.helper.ProgressListener;
+import com.showcase.helper.SimpleDividerItemDecoration;
+import com.showcase.helper.UIHelper;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GalleryFragment2 extends Fragment {
-
+    private MenuItem itemDeselect, itemShare, itemDelete;
     private TextView emptyView;
 
     private GridView mView;
     private Context mContext;
+    private RecyclerView recyclerView;
+
+    private int firstSelectedPosition;
+    private boolean isMultiSelectionMode = false;
+    private boolean isDeselectIconVisible = false;
+
+    private ProgressListener progressListener;
 
 
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
-    private Integer cameraAlbumId = null;
-    private PhoneMediaControl.AlbumEntry selectedAlbum = null;
-    private int itemWidth = 100;
-    private ListAdapter listAdapter;
+    private GalleryAdapter galleryAdapter;
 
     /*   public GalleryFragment() {
            loadAllAlbum();
@@ -48,17 +68,77 @@ public class GalleryFragment2 extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         /** Inflating the layout for this fragment **/
         mContext = this.getActivity();
-        View v = inflater.inflate(R.layout.fragment_gallery, null);
+        View v = inflater.inflate(R.layout.fragment_gallery2, null);
         initializeView(v);
+
         return v;
+    }
+
+    private void initAdapter() {
+        galleryAdapter = new GalleryAdapter(getActivity(), albumsSorted, new GalleryAdapter.OnItemClicked() {
+            @Override
+            public void onClick(int position, View view) {
+                if (isMultiSelectionMode) {
+                    setImageSelection(view, position);
+                } else {
+                    Intent mIntent = new Intent(mContext, AlbumActivity2.class);
+                    Bundle mBundle = new Bundle();
+                    mBundle.putString("Key_ID", position + "");
+                    mBundle.putString("Key_Name", albumsSorted.get(position).bucketName + "");
+                    mIntent.putExtras(mBundle);
+                    mContext.startActivity(mIntent);
+                }
+            }
+
+            @Override
+            public void onLongClick(int position, View view) {
+                if (!isMultiSelectionMode) {
+                    firstSelectedPosition = position;
+                    setImageSelection(view, position);
+                    isMultiSelectionMode = true;
+                }
+                isDeselectIconVisible = true;
+                getActivity().invalidateOptionsMenu();
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        recyclerView.setItemViewCacheSize(albumsSorted != null ? albumsSorted.size() : 0);//keep it minimum 1 to avoid any conflict
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        recyclerView.setAdapter(galleryAdapter);
+        if (galleryAdapter != null) {
+            galleryAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setImageSelection(View view, int position) {
+        if (albumsSorted.get(position).isSelected()) {
+            if (position != firstSelectedPosition) {
+                albumsSorted.get(position).setSelected(false);
+            } else {
+                firstSelectedPosition = -1;
+            }
+        } else {
+            albumsSorted.get(position).setSelected(true);
+        }
+
+        view.setBackgroundResource(albumsSorted.get(position).isSelected() ? R.drawable.img_selection_square : 0);
+
     }
 
     private void initializeView(View v) {
         mView = (GridView) v.findViewById(R.id.grid_view);
         emptyView = (TextView) v.findViewById(R.id.searchEmptyView);
+        recyclerView = (RecyclerView) v.findViewById(R.id.rvImages);
         emptyView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -66,28 +146,7 @@ public class GalleryFragment2 extends Fragment {
             }
         });
         emptyView.setText("NoPhotos");
-        mView.setAdapter(listAdapter = new ListAdapter(mContext));
-
-        int position = mView.getFirstVisiblePosition();
-        int columnsCount = 2;
-        mView.setNumColumns(columnsCount);
-        itemWidth = (ShowCaseApplication.displaySize.x - ((columnsCount + 1) * ShowCaseApplication.dp(4))) / columnsCount;
-        mView.setColumnWidth(itemWidth);
-
-        listAdapter.notifyDataSetChanged();
-        mView.setSelection(position);
-        mView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent mIntent = new Intent(mContext, AlbumActivity2.class);
-                Bundle mBundle = new Bundle();
-                mBundle.putString("Key_ID", position + "");
-                mBundle.putString("Key_Name", albumsSorted.get(position).bucketName + "");
-                mIntent.putExtras(mBundle);
-                mContext.startActivity(mIntent);
-            }
-        });
-
+        initAdapter();
         // loadAllAlbum();
     }
 
@@ -104,118 +163,136 @@ public class GalleryFragment2 extends Fragment {
                     mView.setEmptyView(null);
                 }
 
-                if (listAdapter != null) {
-                    listAdapter.notifyDataSetChanged();
+                if (galleryAdapter != null) {
+                    galleryAdapter.setItems(getActivity(), albumsSorted, true);
                 }
             }
         });
         mediaControl.loadGalleryPhotosAlbums(mContext, 0);
     }
 
-    private class ListAdapter extends BaseFragmentAdapter {
-        private Context mContext;
-
-        public ListAdapter(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled(int i) {
-            return true;
-        }
-
-        @Override
-        public int getCount() {
-            if (selectedAlbum != null) {
-                return selectedAlbum.photos.size();
-            }
-            return albumsSorted != null ? albumsSorted.size() : 0;
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                LayoutInflater li = (LayoutInflater) mContext
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = li.inflate(R.layout.photo_picker_album_layout,
-                        viewGroup, false);
-            }
-            ViewGroup.LayoutParams params = view.getLayoutParams();
-            params.width = itemWidth;
-            params.height = itemWidth;
-            view.setLayoutParams(params);
-
-            PhoneMediaControl.AlbumEntry albumEntry = albumsSorted.get(i);
-            final ImageView imageView = (ImageView) view
-                    .findViewById(R.id.media_photo_image);
-            if (albumEntry.coverPhoto != null && albumEntry.coverPhoto.path != null) {
-                // imageLoader.displayImage("file://" + albumEntry.coverPhoto.path, imageView, options);
- /*               Glide.with(getActivity()).load("file://" + albumEntry.coverPhoto.path)
-                        .centerCrop()
-                        .placeholder(R.drawable.nophotos)
-                        .crossFade()
-                        .into(imageView);*/
-                Glide.with(getActivity()).load(new File(albumEntry.coverPhoto.path))
-                        .centerCrop()
-                        .placeholder(R.drawable.nophotos)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .into(imageView);
-            } else {
-                imageView.setImageResource(R.drawable.nophotos);
-            }
-            TextView textView = (TextView) view.findViewById(R.id.album_name);
-            textView.setText(albumEntry.bucketName);
-            if (cameraAlbumId != null && albumEntry.bucketId == cameraAlbumId) {
-
-            } else {
-
-            }
-            textView = (TextView) view.findViewById(R.id.album_count);
-            textView.setText("" + albumEntry.photos.size());
-
-            return view;
-        }
-
-        @Override
-        public int getItemViewType(int i) {
-            if (selectedAlbum != null) {
-                return 1;
-            }
-            return 0;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 2;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            if (selectedAlbum != null) {
-                return selectedAlbum.photos.isEmpty();
-            }
-            return albumsSorted == null || albumsSorted.isEmpty();
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        itemDeselect = menu.findItem(R.id.action_unSelect);
+        itemShare = menu.findItem(R.id.action_shareImages);
+        itemDelete = menu.findItem(R.id.action_deleteImages);
+        if (isDeselectIconVisible) {
+            itemDeselect.setVisible(true);
+            itemShare.setVisible(false);
+            itemDelete.setVisible(true);
+        } else {
+            itemDeselect.setVisible(false);
+            itemShare.setVisible(false);
+            itemDelete.setVisible(false);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_unSelect:
+                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+                break;
+            case R.id.action_deleteImages:
+                UIHelper.dialogWithTwoOpt(mContext, "Are you sure you want to delete it.", new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        if (isYes) {
+                            deleteFolderImages();
+                        }
+                    }
+                }, "yes", "no");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void imageDeselectionAndNotify(MenuItem itemDeselect, MenuItem itemShare, MenuItem itemDelete) {
+        refreshData();
+        itemDeselect.setVisible(false);
+        itemShare.setVisible(false);
+        itemDelete.setVisible(false);
+    }
+
+    private void refreshData() {
+        if (!albumsSorted.isEmpty()) {
+            isMultiSelectionMode = false;
+            for (PhoneMediaControl.AlbumEntry albumEntry : albumsSorted) {
+                albumEntry.setSelected(false);
+            }
+            loadAllAlbum();
+        }
+    }
+
+    private void deleteFolderImages() {
+
+        try {
+            progressListener = new ProgressBarHelper(mContext, "Please Wait..");
+            progressListener.showProgressDialog();
+            if (isMultiSelectionMode && !albumsSorted.isEmpty()) {
+                Log.e("RemainingPics(a): ", "" + albumsSorted.size());
+                for (int i = albumsSorted.size() - 1; i >= 0; i--) {
+                    if (albumsSorted.get(i).isSelected) {
+
+                        ArrayList<PhoneMediaControl.PhotoEntry> photos = albumsSorted.get(i).photos;
+                        for (PhoneMediaControl.PhotoEntry photo : photos) {
+                            File fDelete = new File(photo.path);
+                            if (fDelete.exists()) {
+
+                                deleteWithProjection(fDelete);
+
+                                if (fDelete.exists()) {
+                                    fDelete.delete();
+                                }
+                                if (fDelete.exists()) {
+                                    try {
+                                        fDelete.getCanonicalFile().delete();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (fDelete.exists()) {
+                                        getActivity().deleteFile(fDelete.getName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        progressListener.hidProgressDialog();
+        //        refreshAfterDelete();
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        isDeselectIconVisible = false;
+    }
+
+    private void deleteWithProjection(File fDelete) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{fDelete.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = mContext.getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+            FunctionHelper.logE("fnf: ", "File not found in media store DB");
+        }
+        c.close();
+    }
+
 }
