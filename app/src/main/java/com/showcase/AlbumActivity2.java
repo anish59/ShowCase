@@ -1,5 +1,6 @@
 package com.showcase;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,9 +21,9 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.AlbumAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
-import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
@@ -40,6 +42,7 @@ public class AlbumActivity2 extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private ProgressListener progressListener;
+    private FloatingActionButton fabCam;
 
 
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
@@ -61,12 +64,35 @@ public class AlbumActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_album2);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         recyclerView = (RecyclerView) findViewById(R.id.rvImages);
-
+        fabCam = (FloatingActionButton) findViewById(R.id.fabCam);
 
         getIntentData();
-        //photos2= GalleryFragment.albumsSorted.get(AlbummID).photos;
         initializeActionBar();
         initAdapter();
+        initListeners();
+    }
+
+    private void initListeners() {
+        fabCam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FunctionHelper.setPermission(mContext, new String[]{Manifest.permission.CAMERA}, new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                        UIHelper.fireIntent(mContext, intent, true);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        Toast.makeText(mContext, "Action Unavailable", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+
+            }
+        });
     }
 
     @Override

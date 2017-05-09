@@ -1,5 +1,6 @@
 package com.showcase.fragments;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.AlbumActivity2;
 import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
@@ -42,6 +45,7 @@ import java.util.ArrayList;
 public class GalleryFragment2 extends Fragment {
     private MenuItem itemDeselect, itemShare, itemDelete;
     private TextView emptyView;
+    private FloatingActionButton fabCam;
 
     private GridView mView;
     private Context mContext;
@@ -79,8 +83,30 @@ public class GalleryFragment2 extends Fragment {
         mContext = this.getActivity();
         View v = inflater.inflate(R.layout.fragment_gallery2, null);
         initializeView(v);
-
+        initListeners();
         return v;
+    }
+
+    private void initListeners() {
+        fabCam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FunctionHelper.setPermission(mContext, new String[]{Manifest.permission.CAMERA}, new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                        UIHelper.fireIntent(mContext, intent, true);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        Toast.makeText(mContext, "Action Unavailable", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
     }
 
     private void initAdapter() {
@@ -146,6 +172,7 @@ public class GalleryFragment2 extends Fragment {
             }
         });
         emptyView.setText("NoPhotos");
+        fabCam = (FloatingActionButton) v.findViewById(R.id.fabCam);
         initAdapter();
         // loadAllAlbum();
     }
