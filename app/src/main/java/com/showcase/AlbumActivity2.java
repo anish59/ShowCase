@@ -44,7 +44,6 @@ public class AlbumActivity2 extends AppCompatActivity {
     private ProgressListener progressListener;
     private FloatingActionButton fabCam;
 
-
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
     public static ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
 
