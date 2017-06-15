@@ -11,6 +11,7 @@
         layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
+        android:padding="@dimen/dimen_3dp"
         android:id="@+id/rvImages"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

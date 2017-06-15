@@ -15,92 +15,92 @@ import com.showcase.model.SlideData;
 
 import java.util.ArrayList;
 
-public class SlideMenuAdapter extends BaseAdapter{
+public class SlideMenuAdapter extends BaseAdapter {
 
-	private Context context;
-	private ArrayList<SlideData> SlideDataS;
-	private LayoutInflater inflater;
-	
-	public SlideMenuAdapter(Context mContext,ArrayList<SlideData> SlideDatas_){
-		this.context=mContext; 
-		this.SlideDataS=SlideDatas_;
-		this.inflater=LayoutInflater.from(context);
-	}
-	
-	@Override
-	public int getCount() {
-		return SlideDataS.size();
-	}
+    private Context context;
+    private ArrayList<SlideData> SlideDataS;
+    private LayoutInflater inflater;
 
-	@Override
-	public Object getItem(int position) {
-		return null;
-	}
+    public SlideMenuAdapter(Context mContext, ArrayList<SlideData> SlideDatas_) {
+        this.context = mContext;
+        this.SlideDataS = SlideDatas_;
+        this.inflater = LayoutInflater.from(context);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return 0;
-	}
+    @Override
+    public int getCount() {
+        return SlideDataS.size();
+    }
 
-	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
-		
-		ViewHolder mViewHolder;
-		if (convertView==null) {
-			mViewHolder=new ViewHolder();
-			convertView=inflater.inflate(R.layout.inflate_slidingrow, null);
-			mViewHolder.imgLogo=(ImageView)convertView.findViewById(R.id.inflate_imgLogo);
-			mViewHolder.txtName=(TextView)convertView.findViewById(R.id.inflate_textLogo);
-			
-			convertView.setTag(mViewHolder); 
-		}else {
-			mViewHolder = (ViewHolder) convertView.getTag();
-		}
-		
-		
-		SlideData mSlideData = SlideDataS.get(position);
-		mViewHolder.txtName.setText(mSlideData.getName());
-		mViewHolder.txtName.setTextColor((mSlideData.getState()==0)?Color.GRAY:Color.parseColor("#FF5722"));
-		mViewHolder.imgLogo.setImageResource(mSlideData.getIcon());
-		mViewHolder.imgLogo.setSelected((mSlideData.getState()==0)?false:true);
-		
-		convertView.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (SlideDataS.get(position).state==0) {
-					for (SlideData slideData : SlideDataS) {
-						slideData.state=0;
-					}
-					SlideDataS.get(position).state=1;
-				}
-				if (slidemenuadapterinterface!=null) {
-					slidemenuadapterinterface.slideRowClickEvent(position);
-				}
-				notifyDataSetChanged();
-			}
-		});
-		return convertView;
-	}
-	
-	private class ViewHolder{
-		public TextView txtName;
-		public ImageView imgLogo;
-	}
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
 
-	public SlideMenuAdapterInterface slidemenuadapterinterface;
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
 
-	public SlideMenuAdapterInterface getSlidemenuadapterinterface() {
-		return slidemenuadapterinterface;
-	}
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
-	public void setSlidemenuadapterinterface(
-			SlideMenuAdapterInterface slidemenuadapterinterface) {
-		this.slidemenuadapterinterface = slidemenuadapterinterface;
-	}
+        ViewHolder mViewHolder;
+        if (convertView == null) {
+            mViewHolder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.inflate_slidingrow, null);
+            mViewHolder.imgLogo = (ImageView) convertView.findViewById(R.id.inflate_imgLogo);
+            mViewHolder.txtName = (TextView) convertView.findViewById(R.id.inflate_textLogo);
 
-	public interface SlideMenuAdapterInterface {
-		void slideRowClickEvent(int postion);
-	}
-	
+            convertView.setTag(mViewHolder);
+        } else {
+            mViewHolder = (ViewHolder) convertView.getTag();
+        }
+
+
+        SlideData mSlideData = SlideDataS.get(position);
+        mViewHolder.txtName.setText(mSlideData.getName());
+        mViewHolder.txtName.setTextColor((mSlideData.getState() == 0) ? Color.GRAY : Color.parseColor("#FF5722"));
+        mViewHolder.imgLogo.setImageResource(mSlideData.getIcon());
+//		mViewHolder.imgLogo.setSelected((mSlideData.getState()==0)?false:true);
+        mViewHolder.imgLogo.setColorFilter((mSlideData.getState() == 0) ? Color.GRAY : Color.parseColor("#FF5722"));
+        convertView.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (SlideDataS.get(position).state == 0) {
+                    for (SlideData slideData : SlideDataS) {
+                        slideData.state = 0;
+                    }
+                    SlideDataS.get(position).state = 1;
+                }
+                if (slidemenuadapterinterface != null) {
+                    slidemenuadapterinterface.slideRowClickEvent(position);
+                }
+                notifyDataSetChanged();
+            }
+        });
+        return convertView;
+    }
+
+    private class ViewHolder {
+        public TextView txtName;
+        public ImageView imgLogo;
+    }
+
+    public SlideMenuAdapterInterface slidemenuadapterinterface;
+
+    public SlideMenuAdapterInterface getSlidemenuadapterinterface() {
+        return slidemenuadapterinterface;
+    }
+
+    public void setSlidemenuadapterinterface(
+            SlideMenuAdapterInterface slidemenuadapterinterface) {
+        this.slidemenuadapterinterface = slidemenuadapterinterface;
+    }
+
+    public interface SlideMenuAdapterInterface {
+        void slideRowClickEvent(int postion);
+    }
+
 }

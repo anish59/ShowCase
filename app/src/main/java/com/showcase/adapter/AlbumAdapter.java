@@ -28,8 +28,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
 
     private Context context;
     private ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-    private DisplayImageOptions options;
-    private ImageLoader imageLoader = ImageLoader.getInstance();
     private OnItemClicked onItemClicked;
     private boolean isRemoveFirstPostionBackground = false;
     private int screenWidth;
@@ -67,7 +65,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         String path = mPhotoEntry.path;
 
         int height;
-        if (position == 1 ) { //|| position == (photos.size() - 2)
+        if (position == 1) { //|| position == (photos.size() - 2)
             height = 270;
         } else {
             height = 340;
@@ -75,8 +73,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         if (path != null && !path.equals("")) {
             Glide.with(context).load("file://" + path)
                     .centerCrop()
-//                    .placeholder(R.drawable.nophotos)
-//                    .crossFade()
+//                    .placeholder(R.drawable.nophotos) // not compatible with staggered layout try to find the solution for it.
+                    .crossFade()
                     .thumbnail(0.5f)
                     .override(screenWidth / 2, height)
                     .into(holder.imgCamPic);

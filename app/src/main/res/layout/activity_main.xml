@@ -18,13 +18,13 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/black"></RelativeLayout>
+            android:background="@android:color/black" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:background="@android:color/white">
+            android:background="@color/black_trans">
 
             <ListView
                 android:id="@+id/sliding_listView"
