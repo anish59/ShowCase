@@ -1,10 +1,13 @@
 package com.showcase.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,11 +32,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private OnItemClicked onItemClicked;
     private boolean isRemoveFirstPostionBackground = false;
+    private int screenWidth;
 
     public AlbumAdapter(Context context, ArrayList<PhoneMediaControl.PhotoEntry> photos, OnItemClicked onItemClicked) {
         this.context = context;
         this.photos = photos;
         this.onItemClicked = onItemClicked;
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+
     }
 
     public void setItems(ArrayList<PhoneMediaControl.PhotoEntry> photos, Context context, boolean isRemoveFirstPostionBackground) {
@@ -55,12 +66,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         PhoneMediaControl.PhotoEntry mPhotoEntry = photos.get(position);
         String path = mPhotoEntry.path;
 
+        int height;
+        if (position == 1 ) { //|| position == (photos.size() - 2)
+            height = 270;
+        } else {
+            height = 340;
+        }
         if (path != null && !path.equals("")) {
             Glide.with(context).load("file://" + path)
                     .centerCrop()
-                    .placeholder(R.drawable.nophotos)
-                    .crossFade()
+//                    .placeholder(R.drawable.nophotos)
+//                    .crossFade()
                     .thumbnail(0.5f)
+                    .override(screenWidth / 2, height)
                     .into(holder.imgCamPic);
         }
 

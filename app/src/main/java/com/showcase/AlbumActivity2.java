@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -159,7 +160,9 @@ public class AlbumActivity2 extends AppCompatActivity {
             }
         });
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
+//        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL));
+
         recyclerView.setItemViewCacheSize(photos != null ? photos.size() : 0);//keep it minimum 1 to avoid any conflict
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(mContext));
         recyclerView.setAdapter(mAdapter);
