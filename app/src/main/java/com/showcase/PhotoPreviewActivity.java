@@ -59,11 +59,11 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem itemDelete, itemShare, itemDeselect;
-        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem itemDelete, itemShare, itemInfo;
+        getMenuInflater().inflate(R.menu.menu_photo_preview, menu);
 
-        itemDeselect = menu.findItem(R.id.action_unSelect);
-        itemDeselect.setVisible(false);
+        itemInfo = menu.findItem(R.id.action_info);
+        itemInfo.setVisible(true);
 
         itemShare = menu.findItem(R.id.action_shareImages);
         itemShare.setVisible(true);
@@ -87,8 +87,17 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
             case R.id.action_deleteImages:
                 // deleteImage();
                 break;
+            case R.id.action_info:
+                imageInfo();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void imageInfo() {
+        PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
+        long imgDate = selectedImage.dateTaken;
+
     }
 
     private void deleteImage() { //todo: remaining to implement
