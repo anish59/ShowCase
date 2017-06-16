@@ -28,7 +28,6 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     private ViewPager mViewPager;
     protected List<PhoneMediaControl.PhotoEntry> photos;
     protected int current, folderPosition;
-
     protected Context context;
     private Toolbar toolbar;
 
@@ -36,7 +35,6 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photopreview);
-
 
         context = PhotoPreviewActivity.this;
         toolbar = (Toolbar) findViewById(R.id.tool_bar);

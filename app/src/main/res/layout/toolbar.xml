@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,6 +10,27 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     tools:ignore="UnusedAttribute">
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:background="#50FFFFFF"-->
-</android.support.v7.widget.Toolbar>
+    &lt;!&ndash;android:background="?attr/colorPrimary"&ndash;&gt;
+    &lt;!&ndash;android:background="#50FFFFFF"&ndash;&gt;
+</android.support.v7.widget.Toolbar>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imageViewplaces"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/toolbar_bg" />
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.Toolbar>
+
+
+</RelativeLayout>
