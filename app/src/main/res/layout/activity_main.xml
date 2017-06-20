@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:background="@color/black_trans">
+            android:background="@drawable/toolbar_bg">
+            <!--android:background="@color/black_trans-->
 
             <ListView
                 android:id="@+id/sliding_listView"
