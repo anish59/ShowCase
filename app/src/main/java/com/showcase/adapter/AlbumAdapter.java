@@ -65,11 +65,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         String path = mPhotoEntry.path;
 
         int height;
-        if (position == 1) { //|| position == (photos.size() - 2)
-            height = 270;
-        } else {
+        if (position != 1) { //|| position == (photos.size() - 2)
             height = 340;
+        } else {
+            height = 270;
         }
+
         if (path != null && !path.equals("")) {
             Glide.with(context).load("file://" + path)
                     .centerCrop()

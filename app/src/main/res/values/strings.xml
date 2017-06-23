@@ -15,4 +15,11 @@
     <string name="deselect_all">Deselect all</string>
     <string name="share">share</string>
     <string name="delete">Delete</string>
+    <string name="imgSynopsis">
+        <b>Created Date:</b>%s\n
+        <b>path:</b>%s<br />
+    </string>
+    <string name="synopsisTitle">
+        <b>Image Synopsis</b>
+    </string>
 </resources>

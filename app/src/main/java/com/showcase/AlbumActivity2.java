@@ -307,15 +307,10 @@ public class AlbumActivity2 extends AppCompatActivity {
                                 if (fDelete.exists()) {
                                     getApplicationContext().deleteFile(fDelete.getName());
                                 }
-
-
                             }
-
-//                            photos.remove(i);
                             photos.remove(i);
                             mAdapter.notifyDataSetChanged();
                             FunctionHelper.callBroadCast(mContext, fDelete);
-                            //photos2.remove(i);
                         } else {
                             Log.e("fDelete: ", " : " + fDelete.getAbsoluteFile());
                         }

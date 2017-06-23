@@ -1,9 +1,14 @@
 package com.showcase;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -18,9 +23,13 @@ import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
+import com.showcase.helper.DateHelper;
+import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.UIHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class PhotoPreviewActivity extends ActionBarActivity implements OnPageChangeListener {
@@ -94,25 +103,39 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
 
     private void imageInfo() {
         PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
-        long imgDate = selectedImage.dateTaken;
+        long date = selectedImage.dateTaken;
+        String imgDate = DateHelper.dateToString(new Date(date), DateHelper.MMM_dd_yy);
+        String imgPath = selectedImage.path;
+        int orientation = selectedImage.orientation;
+        Resources resources = getResources();
+        UIHelper.dialogWithOneOption
 
+                (context, getString(R.string.synopsisTitle), String.format(resources.getString(R.string.imgSynopsis), imgDate, imgPath), new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        //Do nothing
+                    }
+                }, "Ok");
     }
 
     private void deleteImage() { //todo: remaining to implement
         PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
         File file = new File(selectedImage.path);
         if (file.exists()) {
-            file.delete();
+            deleteWithProjection(file);
             if (file.exists()) {
-                try {
-                    file.getCanonicalFile().delete();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                file.delete();
                 if (file.exists()) {
-                    context.deleteFile(file.getName());
-                }
+                    try {
+                        file.getCanonicalFile().delete();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (file.exists()) {
+                        context.deleteFile(file.getName());
+                    }
 
+                }
             }
             photos.remove(mViewPager.getCurrentItem());
             mViewPager.removeViewAt(mViewPager.getCurrentItem());
@@ -193,5 +216,29 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
 
     protected void updatePercent() {
         toolbar.setTitle((current + 1) + "/" + photos.size());
+    }
+
+    private void deleteWithProjection(File fDelete) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{fDelete.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+            FunctionHelper.logE("fnf: ", "File not found in media store DB");
+        }
+        c.close();
     }
 }

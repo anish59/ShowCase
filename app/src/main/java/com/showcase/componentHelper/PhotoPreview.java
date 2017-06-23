@@ -3,6 +3,7 @@ package com.showcase.componentHelper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,7 +44,11 @@ public class PhotoPreview extends LinearLayout implements OnClickListener {
     }
 
     public void loadImage(PhoneMediaControl.PhotoEntry mPhotoEntry) {
-        loadImage("file://" + mPhotoEntry.path);
+        try {
+            loadImage("file://" + mPhotoEntry.path);
+        } catch (Exception e) {
+            Log.e("loadImageException:", e.getMessage());
+        }
     }
 
     private void loadImage(String path) {

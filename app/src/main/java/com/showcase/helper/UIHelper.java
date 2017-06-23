@@ -79,6 +79,24 @@ public class UIHelper {
         alertDialog.show();
     }
 
+    public static void dialogWithOneOption(Context mContext, String title, String msg, final DialogOptionsSelectedListener selectedListener, String yesOption) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle(title)
+                .setMessage(msg)
+                .setCancelable(false)
+                .setPositiveButton(yesOption, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (selectedListener != null)
+                            selectedListener.onSelect(true);
+                        dialog.dismiss();
+                    }
+
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     public interface DialogOptionsSelectedListener {
         void onSelect(boolean isYes);
     }

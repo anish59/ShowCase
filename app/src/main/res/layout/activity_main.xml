@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:background="@drawable/toolbar_bg">
+            android:background="@drawable/dwr_2">
             <!--android:background="@color/black_trans-->
 
             <ListView
