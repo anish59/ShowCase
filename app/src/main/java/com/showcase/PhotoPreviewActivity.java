@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.showcase.adapter.CustomViewPagerAdpater;
+import com.showcase.adapter.MainPagerAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.fragments.GalleryFragment;
@@ -39,6 +41,8 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     protected int current, folderPosition;
     protected Context context;
     private Toolbar toolbar;
+    //    private CustomViewPagerAdpater mPagerAdapter1;
+    private MainPagerAdapter mainPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         mViewPager = (ViewPager) findViewById(R.id.vp_base_app);
         mViewPager.setOnPageChangeListener(this);
         overridePendingTransition(R.anim.activity_alpha_action_in, 0);
-        bindData();
+        bindData(photos);
 
     }
 
@@ -76,7 +80,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         itemShare.setVisible(true);
 
         itemDelete = menu.findItem(R.id.action_deleteImages);
-        itemDelete.setVisible(false);
+        itemDelete.setVisible(true);
 
 
         return super.onCreateOptionsMenu(menu);
@@ -92,7 +96,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
                 shareImage();
                 break;
             case R.id.action_deleteImages:
-                // deleteImage();
+                deleteImage();
                 break;
             case R.id.action_info:
                 imageInfo();
@@ -139,6 +143,9 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
             }
             photos.remove(mViewPager.getCurrentItem());
             mViewPager.removeViewAt(mViewPager.getCurrentItem());
+
+//            mPagerAdapter1.setPagerItems(photos);
+            mainPagerAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
             if ((mViewPager.getCurrentItem() + 1) >= photos.size()) {
                 if (photos != null && !photos.isEmpty()) {
                     mViewPager.setCurrentItem(0);
@@ -146,7 +153,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
             } else {
                 mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
             }
-            mPagerAdapter.notifyDataSetChanged();
+//            mPagerAdapter.notifyDataSetChanged();
         }
 
     }
@@ -161,42 +168,43 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     }
 
 
-    protected void bindData() {
-        mViewPager.setAdapter(mPagerAdapter);
+    protected void bindData(List<PhoneMediaControl.PhotoEntry> photos) {
+        mainPagerAdapter = new MainPagerAdapter();
+        mViewPager.setAdapter(mainPagerAdapter);
         mViewPager.setCurrentItem(current);
-        toolbar.setTitle((current + 1) + "/" + photos.size());
+        toolbar.setTitle((current + 1) + "/" + this.photos.size());
     }
 
-    private PagerAdapter mPagerAdapter = new PagerAdapter() {
-
-        @Override
-        public int getCount() {
-            if (photos == null) {
-                return 0;
-            } else {
-                return photos.size();
-            }
-        }
-
-        @Override
-        public View instantiateItem(final ViewGroup container, final int position) {
-            PhotoPreview photoPreview = new PhotoPreview(context);
-            ((ViewPager) container).addView(photoPreview);
-            photoPreview.loadImage(photos.get(position));
-            return photoPreview;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-    };
+//    private PagerAdapter mPagerAdapter = new PagerAdapter() {
+//
+//        @Override
+//        public int getCount() {
+//            if (photos == null) {
+//                return 0;
+//            } else {
+//                return photos.size();
+//            }
+//        }
+//
+//        @Override
+//        public View instantiateItem(final ViewGroup container, final int position) {
+//            PhotoPreview photoPreview = new PhotoPreview(context);
+//            ((ViewPager) container).addView(photoPreview);
+//            photoPreview.loadImage(photos.get(position));
+//            return photoPreview;
+//        }
+//
+//        @Override
+//        public void destroyItem(ViewGroup container, int position, Object object) {
+//            container.removeView((View) object);
+//        }
+//
+//        @Override
+//        public boolean isViewFromObject(View view, Object object) {
+//            return view == object;
+//        }
+//
+//    };
 
     @Override
     public void onPageScrollStateChanged(int arg0) {
