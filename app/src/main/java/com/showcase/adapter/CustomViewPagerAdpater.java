@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.componentHelper.PhotoPreview;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class CustomViewPagerAdpater extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
+        ((ViewPager) container).removeView((View) object);
     }
 
     public void setPagerItems(List<PhoneMediaControl.PhotoEntry> photos) {

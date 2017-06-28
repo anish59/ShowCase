@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.showcase.adapter.CustomViewPagerAdpater;
 import com.showcase.adapter.MainPagerAdapter;
@@ -27,6 +28,8 @@ import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.DateHelper;
 import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.ProgressBarHelper;
+import com.showcase.helper.ProgressListener;
 import com.showcase.helper.UIHelper;
 
 import java.io.File;
@@ -41,19 +44,26 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     protected int current, folderPosition;
     protected Context context;
     private Toolbar toolbar;
-    //    private CustomViewPagerAdpater mPagerAdapter1;
-    private MainPagerAdapter mainPagerAdapter;
+    private CustomViewPagerAdpater mPagerAdapter1;
+    ProgressListener progressListener;
+//    private MainPagerAdapter mainPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photopreview);
 
+        init();
+
+    }
+
+    private void init() {
         context = PhotoPreviewActivity.this;
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        progressListener = new ProgressBarHelper(context, "Please wait...");
 
         Bundle mBundle = getIntent().getExtras();
         folderPosition = mBundle.getInt("Key_FolderID");
@@ -65,7 +75,6 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         mViewPager.setOnPageChangeListener(this);
         overridePendingTransition(R.anim.activity_alpha_action_in, 0);
         bindData(photos);
-
     }
 
     @Override
@@ -96,7 +105,14 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
                 shareImage();
                 break;
             case R.id.action_deleteImages:
-                deleteImage();
+                UIHelper.dialogWithTwoOpt(context, "Are you sure you want to delete this pic?", new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        if (isYes) {
+                            deleteImage();
+                        }
+                    }
+                }, "yes", "no");
                 break;
             case R.id.action_info:
                 imageInfo();
@@ -123,6 +139,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     }
 
     private void deleteImage() { //todo: remaining to implement
+        progressListener.showProgressDialog();
         PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
         File file = new File(selectedImage.path);
         if (file.exists()) {
@@ -140,20 +157,26 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
                     }
 
                 }
+                progressListener.hidProgressDialog();
             }
-            photos.remove(mViewPager.getCurrentItem());
-            mViewPager.removeViewAt(mViewPager.getCurrentItem());
+            if (!file.exists()) {
 
-//            mPagerAdapter1.setPagerItems(photos);
-            mainPagerAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
-            if ((mViewPager.getCurrentItem() + 1) >= photos.size()) {
-                if (photos != null && !photos.isEmpty()) {
-                    mViewPager.setCurrentItem(0);
+                int currentPostion = mViewPager.getCurrentItem();
+                photos.remove(currentPostion);
+                mPagerAdapter1 = new CustomViewPagerAdpater(photos, context);
+                mViewPager.setAdapter(mPagerAdapter1);
+//                mPagerAdapter1.notifyDataSetChanged();
+                if ((currentPostion + 1) >= photos.size()) {
+                    if (photos != null && !photos.isEmpty()) {
+                        mViewPager.setCurrentItem(0);
+                    }
+                } else {
+                    mViewPager.setCurrentItem(currentPostion);
                 }
             } else {
-                mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+                Toast.makeText(context, "Unable to delete image.", Toast.LENGTH_SHORT).show();
             }
-//            mPagerAdapter.notifyDataSetChanged();
+            progressListener.hidProgressDialog();
         }
 
     }
@@ -169,8 +192,8 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
 
 
     protected void bindData(List<PhoneMediaControl.PhotoEntry> photos) {
-        mainPagerAdapter = new MainPagerAdapter();
-        mViewPager.setAdapter(mainPagerAdapter);
+        mPagerAdapter1 = new CustomViewPagerAdpater(photos, context);
+        mViewPager.setAdapter(mPagerAdapter1);
         mViewPager.setCurrentItem(current);
         toolbar.setTitle((current + 1) + "/" + this.photos.size());
     }
