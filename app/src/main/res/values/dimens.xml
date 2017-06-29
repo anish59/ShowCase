@@ -2,5 +2,8 @@
 <resources>
     <dimen name="tool_bar_top_padding">0dp</dimen>
     <dimen name="textSize16sp">16sp</dimen>
+    <dimen name="textSize18sp">18sp</dimen>
     <dimen name="dimen_3dp">3dp</dimen>
+    <dimen name="dimen_8dp">8dp</dimen>
+    <dimen name="dimen_16dp">16dp</dimen>
 </resources>

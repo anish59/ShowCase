@@ -22,4 +22,9 @@
     <string name="synopsisTitle">
         <b>Image Synopsis</b>
     </string>
+    <string name="name">Name:</string>
+    <string name="size">Size:</string>
+    <string name="created_date">Created Date:</string>
+    <string name="path">Path:</string>
+    <string name="ok">Ok</string>
 </resources>

@@ -81,4 +81,14 @@ public class FunctionHelper {
                 .check();
     }
 
+    public static String getFileSize(String path) {
+        String fileSize = "";
+        File file = new File(path);
+        long fileSizeInBytes = file.length();
+        long fileSizeInKB = fileSizeInBytes / 1024;// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInMB = fileSizeInKB / 1024;// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        fileSize = fileSizeInMB + " MB";
+        return fileSize;
+    }
+
 }

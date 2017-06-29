@@ -24,6 +24,7 @@ import com.showcase.adapter.CustomViewPagerAdpater;
 import com.showcase.adapter.MainPagerAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.componentHelper.PhotoPreview;
+import com.showcase.dialog.ImageInfoDialog;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.DateHelper;
@@ -126,16 +127,17 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         long date = selectedImage.dateTaken;
         String imgDate = DateHelper.dateToString(new Date(date), DateHelper.MMM_dd_yy);
         String imgPath = selectedImage.path;
-        int orientation = selectedImage.orientation;
         Resources resources = getResources();
-        UIHelper.dialogWithOneOption
+       /* UIHelper.dialogWithOneOption
 
                 (context, getString(R.string.synopsisTitle), String.format(resources.getString(R.string.imgSynopsis), imgDate, imgPath), new UIHelper.DialogOptionsSelectedListener() {
                     @Override
                     public void onSelect(boolean isYes) {
                         //Do nothing
                     }
-                }, "Ok");
+                }, "Ok");*/
+
+        new ImageInfoDialog(context, new File(imgPath).getName(), imgDate, FunctionHelper.getFileSize(imgPath), imgPath);
     }
 
     private void deleteImage() { //todo: remaining to implement

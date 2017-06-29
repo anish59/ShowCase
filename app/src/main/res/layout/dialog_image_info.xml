@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/black_overlay_trans"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/image_info" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="@color/pomegranate" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen_8dp"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_8dp">
+
+        <TextView
+            android:id="@+id/txtImageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_3dp"
+            android:text="@string/name"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_3dp"
+            android:text="@string/size"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtCreatedDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_3dp"
+            android:text="@string/created_date"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_3dp"
+            android:text="@string/path"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:background="@null"
+            android:gravity="end|center_vertical"
+            android:padding="@dimen/dimen_8dp"
+            android:text="@string/ok"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textSize18sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
