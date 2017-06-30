@@ -17,6 +17,11 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Created by ANISH on 23-04-2017.
@@ -57,10 +62,10 @@ public class FunctionHelper {
         }
     }
 
-    public static void callBroadCast(Context context, File fDelete) {
+    public static void callBroadCast(Context context, File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             final Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            final Uri contentUri = Uri.fromFile(fDelete);//outputFile
+            final Uri contentUri = Uri.fromFile(file);//outputFile
             scanIntent.setData(contentUri);
             context.sendBroadcast(scanIntent);
         } else {
@@ -81,14 +86,5 @@ public class FunctionHelper {
                 .check();
     }
 
-    public static String getFileSize(String path) {
-        String fileSize = "";
-        File file = new File(path);
-        long fileSizeInBytes = file.length();
-        long fileSizeInKB = fileSizeInBytes / 1024;// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
-        long fileSizeInMB = fileSizeInKB / 1024;// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-        fileSize = fileSizeInMB + " MB";
-        return fileSize;
-    }
 
 }

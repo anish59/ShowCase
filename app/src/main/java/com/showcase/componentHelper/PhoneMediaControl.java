@@ -107,8 +107,8 @@ public class PhoneMediaControl {
                 final ArrayList<AlbumEntry> albumsSorted = new ArrayList<AlbumEntry>();
                 HashMap<Integer, AlbumEntry> albums = new HashMap<Integer, AlbumEntry>();
                 AlbumEntry allPhotosAlbum = null;
-                String cameraFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/" + "Camera/";
-                Integer cameraAlbumId = null;
+              /*  String cameraFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + "/" + "Camera/";
+                Integer cameraAlbumId = null;*/
 
                 Cursor cursor = null;
                 try {
@@ -135,10 +135,10 @@ public class PhoneMediaControl {
 
                             PhotoEntry photoEntry = new PhotoEntry(bucketId, imageId, dateTaken, path, orientation);
 
-                            if (allPhotosAlbum == null) {
+                            /*if (allPhotosAlbum == null) {
                                 allPhotosAlbum = new AlbumEntry(0, "AllPhotos", photoEntry);
                                 albumsSorted.add(0, allPhotosAlbum);
-                            }
+                            }*/
                             if (allPhotosAlbum != null) {
                                 allPhotosAlbum.addPhoto(photoEntry);
                             }
@@ -147,14 +147,8 @@ public class PhoneMediaControl {
                             if (albumEntry == null) {
                                 albumEntry = new AlbumEntry(bucketId, bucketName, photoEntry);
                                 albums.put(bucketId, albumEntry);
-                                if (cameraAlbumId == null && cameraFolder != null && path != null && path.startsWith(cameraFolder)) {
-                                    albumsSorted.add(0, albumEntry);
-                                    cameraAlbumId = bucketId;
-                                } else {
-                                    albumsSorted.add(albumEntry);
-                                }
+                                albumsSorted.add(albumEntry);
                             }
-
                             albumEntry.addPhoto(photoEntry);
                         }
                     }

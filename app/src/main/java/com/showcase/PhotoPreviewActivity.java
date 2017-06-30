@@ -9,43 +9,42 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.showcase.adapter.CustomViewPagerAdpater;
-import com.showcase.adapter.MainPagerAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
-import com.showcase.componentHelper.PhotoPreview;
 import com.showcase.dialog.ImageInfoDialog;
-import com.showcase.fragments.GalleryFragment;
-import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.DateHelper;
+import com.showcase.helper.FileHelper;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
+import com.showcase.helper.SingleMediaScanner;
 import com.showcase.helper.UIHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PhotoPreviewActivity extends ActionBarActivity implements OnPageChangeListener {
+public class PhotoPreviewActivity extends ActionBarActivity {
 
     private ViewPager mViewPager;
     protected List<PhoneMediaControl.PhotoEntry> photos;
     protected int current, folderPosition;
+    private String folderName;
     protected Context context;
     private Toolbar toolbar;
     private CustomViewPagerAdpater mPagerAdapter1;
+    public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
+
     ProgressListener progressListener;
 //    private MainPagerAdapter mainPagerAdapter;
 
@@ -66,16 +65,16 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         progressListener = new ProgressBarHelper(context, "Please wait...");
 
+        getIntentData();
+        loadAlbumAndSetData(folderName);
+
+    }
+
+    private void getIntentData() {
         Bundle mBundle = getIntent().getExtras();
-        folderPosition = mBundle.getInt("Key_FolderID");
+//        folderPosition = mBundle.getInt("Key_FolderID");
+        folderName = mBundle.getString("Key_FolderName");
         current = mBundle.getInt("Key_ID");
-
-        photos = GalleryFragment2.albumsSorted.get(folderPosition).photos;
-
-        mViewPager = (ViewPager) findViewById(R.id.vp_base_app);
-        mViewPager.setOnPageChangeListener(this);
-        overridePendingTransition(R.anim.activity_alpha_action_in, 0);
-        bindData(photos);
     }
 
     @Override
@@ -92,6 +91,8 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         itemDelete = menu.findItem(R.id.action_deleteImages);
         itemDelete.setVisible(true);
 
+        itemDelete = menu.findItem(R.id.action_PinImage);
+        itemDelete.setVisible(true);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -118,8 +119,30 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
             case R.id.action_info:
                 imageInfo();
                 break;
+
+            case R.id.action_PinImage:
+//                Toast.makeText(context, "Nailed it", Toast.LENGTH_SHORT).show();
+                pinImage();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void pinImage() {
+        progressListener.showProgressDialog();
+        try {
+            PhoneMediaControl.PhotoEntry selectedImage = photos.get(mViewPager.getCurrentItem());
+            File imgFile = new File(selectedImage.path);
+            FileHelper.copyFile(imgFile.getAbsolutePath(), imgFile.getName(), FileHelper.getPinnedPath());
+            FunctionHelper.callBroadCast(context, new File(FileHelper.getPinnedPath())); //needed to include parent image folder to include it in media type
+            Toast.makeText(context, "Image Pinned", Toast.LENGTH_SHORT).show();
+            new SingleMediaScanner(context, imgFile);
+        } catch (Exception e) {
+            Toast.makeText(context, "Parsing error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
+        progressListener.hidProgressDialog();
     }
 
     private void imageInfo() {
@@ -137,7 +160,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
                     }
                 }, "Ok");*/
 
-        new ImageInfoDialog(context, new File(imgPath).getName(), imgDate, FunctionHelper.getFileSize(imgPath), imgPath);
+        new ImageInfoDialog(context, new File(imgPath).getName(), imgDate, FileHelper.getFileSize(imgPath), imgPath);
     }
 
     private void deleteImage() { //todo: remaining to implement
@@ -199,38 +222,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         mViewPager.setCurrentItem(current);
         toolbar.setTitle((current + 1) + "/" + this.photos.size());
     }
-
-//    private PagerAdapter mPagerAdapter = new PagerAdapter() {
-//
-//        @Override
-//        public int getCount() {
-//            if (photos == null) {
-//                return 0;
-//            } else {
-//                return photos.size();
-//            }
-//        }
-//
-//        @Override
-//        public View instantiateItem(final ViewGroup container, final int position) {
-//            PhotoPreview photoPreview = new PhotoPreview(context);
-//            ((ViewPager) container).addView(photoPreview);
-//            photoPreview.loadImage(photos.get(position));
-//            return photoPreview;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) object);
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//    };
-
+/*
     @Override
     public void onPageScrollStateChanged(int arg0) {
 
@@ -245,7 +237,7 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
     public void onPageSelected(int arg0) {
         current = arg0;
         updatePercent();
-    }
+    }*/
 
     protected void updatePercent() {
         toolbar.setTitle((current + 1) + "/" + photos.size());
@@ -274,4 +266,39 @@ public class PhotoPreviewActivity extends ActionBarActivity implements OnPageCha
         }
         c.close();
     }
+
+    private void loadAlbumAndSetData(String nameAlbum) {
+        PhoneMediaControl mediaControl = new PhoneMediaControl();
+        mediaControl.setLoadalbumphoto(new PhoneMediaControl.loadAlbumPhoto() {
+            @Override
+            public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
+                albumsSorted = albumsSorted1; //todo: check validation if its not empty
+                photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
+                photos = albumsSorted.get(0).photos;//Todo: call from database direct
+                mViewPager = (ViewPager) findViewById(R.id.vp_base_app);
+                mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                        current = state;
+                        updatePercent();
+                    }
+                });
+                overridePendingTransition(R.anim.activity_alpha_action_in, 0);
+                bindData(photos);
+            }
+        });
+        mediaControl.loadPhotosByBucketName(context, nameAlbum);
+
+    }
+
 }

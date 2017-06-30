@@ -132,7 +132,7 @@ public class AlbumActivity2 extends AppCompatActivity {
             public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
                 albumsSorted = albumsSorted1; //todo: check validation if its not empty
                 photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-                photos = albumsSorted.get(0).photos;
+                photos = albumsSorted.get(0).photos; //todo: error here solve it
                 initializeActionBar();
                 if (!isFromRestart) {
                     initAdapter();
@@ -154,7 +154,8 @@ public class AlbumActivity2 extends AppCompatActivity {
                 } else {
                     Intent mIntent = new Intent(mContext, PhotoPreviewActivity.class);
                     Bundle mBundle = new Bundle();
-                    mBundle.putInt("Key_FolderID", AlbummID);
+                    /*mBundle.putInt("Key_FolderID", AlbummID);*/
+                    mBundle.putString("Key_FolderName", albumsSorted.get(0).bucketName);
                     mBundle.putInt("Key_ID", position);
                     mIntent.putExtras(mBundle);
                     startActivity(mIntent);

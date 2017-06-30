@@ -27,4 +27,6 @@
     <string name="created_date">Created Date:</string>
     <string name="path">Path:</string>
     <string name="ok">Ok</string>
+    <string name="pin_it">Pin it !</string>
+    <string name="image_info">Image Info</string>
 </resources>

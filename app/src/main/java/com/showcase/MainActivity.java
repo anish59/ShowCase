@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.SlideMenuAdapterInterface {
 
     private Context mContext;
-    private Toolbar toolbar;
+    public Toolbar toolbar;
     private DrawerLayout Drawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fragmentManager = null;
@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
                 currentFragment = new VideoFragment2();
                 break;
 
+            case 2:
+                Toast.makeText(mContext, "Coming soon", Toast.LENGTH_SHORT).show();
+//                currentFragment=
+                break;
             default:
                 break;
         }
@@ -227,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     /**
      * Slide Menu List Array.
      */
-    private String[] title = {"All Images", "Video"};
-    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_video_cam};
+    private String[] title = {"All Images", "Video", "Pinned Pics"};
+    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_video_cam, R.drawable.ic_pin_image};
 
     private ArrayList<SlideData> getSlideList() {
         ArrayList<SlideData> arrayList = new ArrayList<SlideData>();
