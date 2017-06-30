@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.AlbumAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
-import com.showcase.fragments.GalleryFragment2;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
@@ -55,7 +54,6 @@ public class AlbumActivity2 extends AppCompatActivity {
     private int firstSelectedPosition;
     private boolean isDeselectIconVisible = false;
     private MenuItem itemDeselect, itemShare, itemDelete;
-    private ArrayList<PhoneMediaControl.PhotoEntry> photos2;
 
 
     @Override
@@ -66,10 +64,8 @@ public class AlbumActivity2 extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.rvImages);
         fabCam = (FloatingActionButton) findViewById(R.id.fabCam);
 
-        getIntentData();
-        initializeActionBar();
-        initAdapter();
-        initListeners();
+        getIntentSetData();
+
     }
 
     private void initListeners() {
@@ -122,14 +118,31 @@ public class AlbumActivity2 extends AppCompatActivity {
         UIHelper.initToolbar(AlbumActivity2.this, toolbar, nameAlbum + " (" + photos.size() + ")");
     }
 
-    private void getIntentData() {
+    private void getIntentSetData() {
         Bundle mBundle = getIntent().getExtras();
         nameAlbum = mBundle.getString("Key_Name");
         AlbummID = Integer.parseInt(mBundle.getString("Key_ID"));
-        albumsSorted = GalleryFragment2.albumsSorted;
+        loadAlbum(nameAlbum, false);
+    }
 
-        photos = albumsSorted.get(AlbummID).photos;
-        photos2 = photos;
+    private void loadAlbum(String nameAlbum, final boolean isFromRestart) {
+        PhoneMediaControl mediaControl = new PhoneMediaControl();
+        mediaControl.setLoadalbumphoto(new PhoneMediaControl.loadAlbumPhoto() {
+            @Override
+            public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
+                albumsSorted = albumsSorted1; //todo: check validation if its not empty
+                photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
+                photos = albumsSorted.get(0).photos;
+                initializeActionBar();
+                if (!isFromRestart) {
+                    initAdapter();
+                    initListeners();
+                } else {
+                    mAdapter.setItems(photos, mContext, true);
+                }
+            }
+        });
+        mediaControl.loadPhotosByBucketName(mContext, nameAlbum);
     }
 
     private void initAdapter() {
@@ -366,4 +379,9 @@ public class AlbumActivity2 extends AppCompatActivity {
         //  new GalleryFragment();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loadAlbum(nameAlbum, true);
+    }
 }
