@@ -16,7 +16,7 @@ import com.showcase.R;
  * Created by anish on 29-06-2017.
  */
 
-public class ImageInfoDialog extends Dialog {
+public class ImageInfoDialog extends Dialog  {
     private TextView txtImageName;
     private TextView txtSize;
     private TextView txtCreatedDate;

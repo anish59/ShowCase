@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.SlideMenuAdapter;
+import com.showcase.fragments.FragmentPinnedPics;
 import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
 import com.showcase.fragments.VideoFragment2;
@@ -219,8 +220,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
                 break;
 
             case 2:
-                Toast.makeText(mContext, "Coming soon", Toast.LENGTH_SHORT).show();
-//                currentFragment=
+                currentFragment = new FragmentPinnedPics();
                 break;
             default:
                 break;

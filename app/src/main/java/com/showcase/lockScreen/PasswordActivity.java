@@ -34,12 +34,11 @@ public class PasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen);
+        setContentView(R.layout.dialog_pattern);
         mPatternLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
         txtConfirmAgain = (TextView) findViewById(R.id.txtConfirm);
         getDataFromIntent();
         init();
-
     }
 
     private void getDataFromIntent() {

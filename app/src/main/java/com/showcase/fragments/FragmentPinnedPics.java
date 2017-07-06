@@ -1,14 +1,20 @@
 package com.showcase.fragments;
 
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,9 +29,14 @@ import com.showcase.R;
 import com.showcase.adapter.AlbumAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
 import com.showcase.helper.FileHelper;
+import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.ProgressBarHelper;
+import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
 import com.showcase.helper.UIHelper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -43,8 +54,7 @@ public class FragmentPinnedPics extends Fragment {
     private boolean isMultiSelectionMode = false;
     private boolean isDeselectIconVisible = false;
     private AlbumAdapter mAdapter;
-    private RecyclerView recyclerView;
-
+    private ProgressListener progressListener;
 
     @Override
 
@@ -59,6 +69,8 @@ public class FragmentPinnedPics extends Fragment {
         context = this.getActivity();
         View view = inflater.inflate(R.layout.fragment_pinned_pics, null);
         initViews(view);
+        progressListener = new ProgressBarHelper(context, "Please wait...");
+        loadAlbum(FileHelper.PINNED_FOLDER, false);
         return view;
     }
 
@@ -90,7 +102,7 @@ public class FragmentPinnedPics extends Fragment {
                     @Override
                     public void onSelect(boolean isYes) {
                         if (isYes) {
-                            //   deleteFolderImages();
+                            deleteImages();
                         }
                     }
                 }, "yes", "no");
@@ -170,13 +182,13 @@ public class FragmentPinnedPics extends Fragment {
                 getActivity().invalidateOptionsMenu();
             }
         });
-        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL));
+        rvImages.setHasFixedSize(true);
+        rvImages.setLayoutManager(new GridLayoutManager(context, 3));
+//        rvImages.setLayoutManager(new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL));
 
-        recyclerView.setItemViewCacheSize(photos != null ? photos.size() : 0);//keep it minimum 1 to avoid any conflict
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(context));
-        recyclerView.setAdapter(mAdapter);
+        rvImages.setItemViewCacheSize(photos != null ? photos.size() : 0);//keep it minimum 1 to avoid any conflict
+        rvImages.addItemDecoration(new SimpleDividerItemDecoration(context));
+        rvImages.setAdapter(mAdapter);
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
@@ -195,12 +207,83 @@ public class FragmentPinnedPics extends Fragment {
             photos.get(position).setSelected(true);
         }
         view.setBackgroundResource(photos.get(position).isSelected() ? R.drawable.img_selection_square : 0);
-//        view.setBackgroundResource(photos.get(position).isSelected() ? R.drawable.img_selection_square : 0);
     }
 
     private void initializeActionBar() {
         UIHelper.initToolbar((MainActivity) getActivity(), new MainActivity().toolbar, "Pinned Images" + " (" + photos.size() + ")");
     }
 
+    private void deleteImages() {
 
+        try {
+            progressListener = new ProgressBarHelper(context, "Please Wait..");
+            progressListener.showProgressDialog();
+            if (isMultiSelectionMode && !photos.isEmpty()) {
+                Log.e("RemainingPics(a): ", "" + photos.size());
+                for (int i = photos.size() - 1; i >= 0; i--) {
+                    if (photos.get(i).isSelected) {
+                        FunctionHelper.logE("selected: ", i + "> " + photos.get(i).path);
+                        File fDelete = new File(photos.get(i).path);
+                        Log.e("path:", " " + i + ": " + photos.get(i).path);
+                        if (fDelete.exists()) {
+
+                            deleteWithProjection(fDelete);
+
+                            if (fDelete.exists()) {
+                                fDelete.delete();
+                            }
+                            if (fDelete.exists()) {
+                                try {
+                                    fDelete.getCanonicalFile().delete();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                if (fDelete.exists()) {
+                                    context.deleteFile(fDelete.getName());
+                                }
+                            }
+                            photos.remove(i);
+                            mAdapter.notifyDataSetChanged();
+                            FunctionHelper.callBroadCast(context, fDelete);
+                        } else {
+                            Log.e("fDelete: ", " : " + fDelete.getAbsoluteFile());
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        progressListener.hidProgressDialog();
+        //        refreshAfterDelete();
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        isDeselectIconVisible = false;
+        initializeActionBar();
+    }
+
+    private void deleteWithProjection(File fDelete) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{fDelete.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = context.getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+            FunctionHelper.logE("fnf: ", "File not found in media store DB");
+        }
+        c.close();
+    }
 }

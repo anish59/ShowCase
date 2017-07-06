@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.showcase.R;
 import com.showcase.ShowCaseApplication;
 
 import java.util.ArrayList;
@@ -73,6 +74,88 @@ public class PhoneMediaControl {
                             }
 
                             albumEntry.addPhoto(photoEntry);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("tmessages", e.toString());
+                } finally {
+                    if (cursor != null) {
+                        try {
+                            cursor.close();
+                        } catch (Exception e) {
+                            Log.e("tmessages", e.toString());
+                        }
+                    }
+                }
+                runOnUIThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (loadalbumphoto != null) {
+                            loadalbumphoto.loadPhoto(albumsSorted);
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public static void loadAlbumsAllPics(Context mContext, String allPhotos) {
+        context = mContext;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<AlbumEntry> albumsSorted = new ArrayList<AlbumEntry>();
+                HashMap<Integer, AlbumEntry> albums = new HashMap<Integer, AlbumEntry>();
+                AlbumEntry allPhotosAlbum = null;
+
+
+                Cursor cursor = null;
+                try {
+                    cursor = MediaStore.Images.Media.query(ShowCaseApplication.applicationContext.getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projectionPhotos, "", null, MediaStore.Images.Media.DATE_TAKEN + " DESC");
+                    if (cursor != null) {
+                        int imageIdColumn = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                        int bucketIdColumn = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_ID);
+                        int bucketNameColumn = cursor.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+                        int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+                        int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
+                        int orientationColumn = cursor.getColumnIndex(MediaStore.Images.Media.ORIENTATION);
+
+                        while (cursor.moveToNext()) {
+                            int imageId = cursor.getInt(imageIdColumn);
+                            int bucketId = cursor.getInt(bucketIdColumn);
+                            String bucketName = cursor.getString(bucketNameColumn);
+                            String path = cursor.getString(dataColumn);
+                            long dateTaken = cursor.getLong(dateColumn);
+                            int orientation = cursor.getInt(orientationColumn);
+
+                            if (path == null || path.length() == 0) {
+                                continue;
+                            }
+
+                            PhotoEntry photoEntry = new PhotoEntry(bucketId, imageId, dateTaken, path, orientation);
+
+                            if (allPhotosAlbum == null) {
+                                allPhotosAlbum = new AlbumEntry(0, context.getString(R.string.allPics), photoEntry);
+                                albumsSorted.add(0, allPhotosAlbum);
+                            }
+                            if (allPhotosAlbum != null) {
+                                allPhotosAlbum.addPhoto(photoEntry);
+                            }
+
+                            /*AlbumEntry albumEntry = albums.get(bucketId);
+                            if (albumEntry == null) {
+                                albumEntry = new AlbumEntry(bucketId, bucketName, photoEntry);
+                                albums.put(bucketId, albumEntry);
+                                if (cameraAlbumId == null && cameraFolder != null && path != null && path.startsWith(cameraFolder)) {
+                                    albumsSorted.add(0, albumEntry);
+                                    cameraAlbumId = bucketId;
+                                } else {
+                                    albumsSorted.add(albumEntry);
+                                }
+                            }*/
+
+                            //albumEntry.addPhoto(photoEntry);
                         }
                     }
                 } catch (Exception e) {

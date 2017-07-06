@@ -13,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -25,10 +24,12 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.adapter.AlbumAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
+import com.showcase.helper.FileHelper;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.ProgressBarHelper;
 import com.showcase.helper.ProgressListener;
 import com.showcase.helper.SimpleDividerItemDecoration;
+import com.showcase.helper.SingleMediaScanner;
 import com.showcase.helper.UIHelper;
 
 import java.io.File;
@@ -53,7 +54,8 @@ public class AlbumActivity2 extends AppCompatActivity {
     private boolean isMultiSelectionMode = false;
     private int firstSelectedPosition;
     private boolean isDeselectIconVisible = false;
-    private MenuItem itemDeselect, itemShare, itemDelete;
+    private MenuItem itemDeselect, itemShare, itemDelete, itemPinImage;
+    private boolean isPinnedAlbum = false;
 
 
     @Override
@@ -91,28 +93,6 @@ public class AlbumActivity2 extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_unSelect:
-                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
-                break;
-            case R.id.action_shareImages:
-                shareImages();
-                break;
-            case R.id.action_deleteImages:
-                UIHelper.dialogWithTwoOpt(mContext, "Are you sure want to delete it?", new UIHelper.DialogOptionsSelectedListener() {
-                    @Override
-                    public void onSelect(boolean isYes) {
-                        if (isYes) {
-                            deleteImages();
-                        }
-                    }
-                }, "yes", "no");
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void initializeActionBar() {
         UIHelper.initToolbar(AlbumActivity2.this, toolbar, nameAlbum + " (" + photos.size() + ")");
@@ -130,9 +110,9 @@ public class AlbumActivity2 extends AppCompatActivity {
         mediaControl.setLoadalbumphoto(new PhoneMediaControl.loadAlbumPhoto() {
             @Override
             public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
-                albumsSorted = albumsSorted1; //todo: check validation if its not empty
+                albumsSorted = albumsSorted1;
                 photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-                photos = albumsSorted.get(0).photos; //todo: error here solve it
+                photos = albumsSorted.get(0).photos;
                 initializeActionBar();
                 if (!isFromRestart) {
                     initAdapter();
@@ -142,7 +122,14 @@ public class AlbumActivity2 extends AppCompatActivity {
                 }
             }
         });
-        mediaControl.loadPhotosByBucketName(mContext, nameAlbum);
+        if (nameAlbum.equals(getString(R.string.allPics))) {
+            mediaControl.loadAlbumsAllPics(mContext, getString(R.string.allPics));
+        } else {
+            if (nameAlbum.equals(FileHelper.PINNED_FOLDER)) {
+                isPinnedAlbum = true;
+            }
+            mediaControl.loadPhotosByBucketName(mContext, nameAlbum);
+        }
     }
 
     private void initAdapter() {
@@ -164,6 +151,9 @@ public class AlbumActivity2 extends AppCompatActivity {
 
             @Override
             public void onLongClick(int position, View view) {
+                if (photos.get(position).path.contains(FileHelper.PINNED_FOLDER)) {
+                    itemPinImage.setVisible(false);
+                }
                 if (!isMultiSelectionMode) {
                     firstSelectedPosition = position;
                     setImageSelection(view, position);
@@ -174,8 +164,8 @@ public class AlbumActivity2 extends AppCompatActivity {
             }
         });
         recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+//        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL));
 
         recyclerView.setItemViewCacheSize(photos != null ? photos.size() : 0);//keep it minimum 1 to avoid any conflict
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(mContext));
@@ -202,48 +192,63 @@ public class AlbumActivity2 extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.album_menu, menu);
         itemDeselect = menu.findItem(R.id.action_unSelect);
         itemShare = menu.findItem(R.id.action_shareImages);
         itemDelete = menu.findItem(R.id.action_deleteImages);
+        itemPinImage = menu.findItem(R.id.action_PinImage);
         if (isDeselectIconVisible) {
             itemDeselect.setVisible(true);
             itemShare.setVisible(true);
             itemDelete.setVisible(true);
+            itemPinImage.setVisible(true);
         } else {
             itemDeselect.setVisible(false);
             itemShare.setVisible(false);
             itemDelete.setVisible(false);
+            itemPinImage.setVisible(false);
+        }
+
+        if (isPinnedAlbum) {
+            itemPinImage.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void imageDeselectionAndNotify(MenuItem itemDeselect, MenuItem itemShare, MenuItem itemDelete) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_unSelect:
+                imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete, itemPinImage);
+                break;
+            case R.id.action_shareImages:
+                shareImages();
+                break;
+            case R.id.action_deleteImages:
+                UIHelper.dialogWithTwoOpt(mContext, "Are you sure want to delete it?", new UIHelper.DialogOptionsSelectedListener() {
+                    @Override
+                    public void onSelect(boolean isYes) {
+                        if (isYes) {
+                            deleteImages();
+                        }
+                    }
+                }, "yes", "no");
+                break;
+            case R.id.action_PinImage:
+                pinSelectedImages();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void imageDeselectionAndNotify(MenuItem itemDeselect, MenuItem itemShare, MenuItem itemDelete, MenuItem itemPinImage) {
         refreshData();
         itemDeselect.setVisible(false);
         itemShare.setVisible(false);
         itemDelete.setVisible(false);
-
+        itemPinImage.setVisible(false);
     }
 
-    private void refreshAfterDelete() {
-        isMultiSelectionMode = false;
-        for (PhoneMediaControl.PhotoEntry photo : photos) {
-            photo.setSelected(false);
-        }
-        itemDeselect.setVisible(false);
-        itemShare.setVisible(false);
-        itemDelete.setVisible(false);
-        initializeActionBar();
-       /* if (photos != null && !photos.isEmpty()) {
-            isMultiSelectionMode = false;
-            for (PhoneMediaControl.PhotoEntry photo : photos) {
-                photo.setSelected(false);
-            }
-            Log.e("RemainingPics(C): ", "" + photos.size());
-            mAdapter.setItems(photos, mContext, true);
-        }*/
-    }
 
     private void refreshData() {
         if (photos != null && !photos.isEmpty()) {
@@ -285,12 +290,41 @@ public class AlbumActivity2 extends AppCompatActivity {
                     files.add(Uri.parse("file:///" + photo.path));
                 }
             }
-
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
             intent = Intent.createChooser(intent, "Share with...");
             startActivity(intent);
-            imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+            imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete, itemPinImage);
         }
+    }
+
+    private void pinSelectedImages() {
+        try {
+            progressListener = new ProgressBarHelper(mContext, "Please Wait..");
+            progressListener.showProgressDialog();
+            if (isMultiSelectionMode && !photos.isEmpty()) {
+                for (int i = photos.size() - 1; i >= 0; i--) {
+                    if (photos.get(i).isSelected) {
+                        FunctionHelper.logE("selected: ", i + "> " + photos.get(i).path);
+                        pinImage(photos.get(i).path);
+                    }
+                }
+            }
+            progressListener.hidProgressDialog();
+            Toast.makeText(mContext, "Images Pinned", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(mContext, "Parsing error", Toast.LENGTH_SHORT).show();
+            progressListener.hidProgressDialog();
+        }
+
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete, itemPinImage);
+    }
+
+    private void pinImage(String path) {
+        File imgFile = new File(path);
+        FileHelper.copyFile(imgFile.getAbsolutePath(), imgFile.getName(), FileHelper.getPinnedPath());
+        FunctionHelper.callBroadCast(mContext, new File(FileHelper.getPinnedPath())); //needed to include parent image folder to include it in media type
+        new SingleMediaScanner(mContext, imgFile);
     }
 
     private void deleteImages() {
@@ -344,7 +378,7 @@ public class AlbumActivity2 extends AppCompatActivity {
 
         progressListener.hidProgressDialog();
         //        refreshAfterDelete();
-        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete);
+        imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete, itemPinImage);
         isDeselectIconVisible = false;
         initializeActionBar();
     }

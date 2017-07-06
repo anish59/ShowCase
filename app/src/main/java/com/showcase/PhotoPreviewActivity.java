@@ -141,7 +141,6 @@ public class PhotoPreviewActivity extends ActionBarActivity {
             Toast.makeText(context, "Parsing error", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-
         progressListener.hidProgressDialog();
     }
 
@@ -279,7 +278,8 @@ public class PhotoPreviewActivity extends ActionBarActivity {
                 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
                     @Override
                     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                        current = position;
+                        updatePercent();
                     }
 
                     @Override
@@ -289,15 +289,18 @@ public class PhotoPreviewActivity extends ActionBarActivity {
 
                     @Override
                     public void onPageScrollStateChanged(int state) {
-                        current = state;
-                        updatePercent();
+
                     }
                 });
                 overridePendingTransition(R.anim.activity_alpha_action_in, 0);
                 bindData(photos);
             }
         });
-        mediaControl.loadPhotosByBucketName(context, nameAlbum);
+        if (nameAlbum.equals(getString(R.string.allPics))) {
+            mediaControl.loadAlbumsAllPics(context, getString(R.string.allPics));
+        } else {
+            mediaControl.loadPhotosByBucketName(context, nameAlbum);
+        }
 
     }
 

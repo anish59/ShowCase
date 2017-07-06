@@ -64,20 +64,27 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.MyViewHolder
         PhoneMediaControl.PhotoEntry mPhotoEntry = photos.get(position);
         String path = mPhotoEntry.path;
 
-        int height;
+        /*int height;
         if (position != 1) { //|| position == (photos.size() - 2)
             height = 340;
         } else {
             height = 270;
-        }
+        }*/
 
         if (path != null && !path.equals("")) {
-            Glide.with(context).load("file://" + path)
+            /*Glide.with(context).load("file://" + path)
                     .centerCrop()
 //                    .placeholder(R.drawable.nophotos) // not compatible with staggered layout try to find the solution for it.
                     .crossFade()
                     .thumbnail(0.5f)
-                    .override(screenWidth / 2, height)
+//                    .override(screenWidth / 2, height)
+                    .into(holder.imgCamPic);
+*/
+            Glide.with(context).load(path)
+                    .centerCrop()
+                    .placeholder(R.drawable.nophotos)
+                    .crossFade()
+                    .thumbnail(0.5f)
                     .into(holder.imgCamPic);
         }
 
