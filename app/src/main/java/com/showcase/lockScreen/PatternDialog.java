@@ -21,7 +21,8 @@ import java.util.List;
 
 public class PatternDialog extends Dialog implements PatternLockViewListener {
     private Context context;
-    private OnPatternCompleteListener patternCompleteListener;
+    private static OnPatternCompleteListener patternCompleteListener;
+
 
     public PatternDialog(@NonNull Context context, OnPatternCompleteListener patternCompleteListener) {
         super(context);
@@ -82,4 +83,8 @@ public class PatternDialog extends Dialog implements PatternLockViewListener {
         void onCleared() {
         }
     }
+    public static void setPatternCompleteListener(OnPatternCompleteListener patternCompleteListener) {
+        patternCompleteListener = patternCompleteListener;
+    }
+
 }
