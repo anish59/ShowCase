@@ -2,6 +2,7 @@ package com.showcase;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +26,7 @@ import com.showcase.fragments.GalleryFragment2;
 import com.showcase.fragments.VideoFragment2;
 import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.UIHelper;
+import com.showcase.lockScreen.PasswordActivity;
 import com.showcase.model.SlideData;
 
 import java.util.ArrayList;
@@ -127,7 +129,12 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     @Override
     public void slideRowClickEvent(int postion) {
         if (currentPosition == postion) {
-            closeDrware();
+
+            if (currentPosition == 3) {
+                startActivity(new Intent(mContext, PasswordActivity.class));
+            } else {
+                closeDrware();
+            }
             return;
         }
         currentPosition = postion;
@@ -222,6 +229,9 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
             case 2:
                 currentFragment = new FragmentPinnedPics();
                 break;
+            case 3:
+                startActivity(new Intent(mContext, PasswordActivity.class));
+                break;
             default:
                 break;
         }
@@ -231,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     /**
      * Slide Menu List Array.
      */
-    private String[] title = {"All Images", "Video", "Pinned Pics"};
-    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_video_cam, R.drawable.ic_pin_image};
+    private String[] title = {"All Images", "Video", "Pinned Pics", "password"};
+    private int[] titleLogo = {R.drawable.ic_image_gallery, R.drawable.ic_video_cam, R.drawable.ic_pin_image, R.drawable.ic_lock};
 
     private ArrayList<SlideData> getSlideList() {
         ArrayList<SlideData> arrayList = new ArrayList<SlideData>();

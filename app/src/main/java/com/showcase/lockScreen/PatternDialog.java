@@ -28,6 +28,12 @@ public class PatternDialog extends Dialog implements PatternLockViewListener {
         this.context = context;
         this.patternCompleteListener = patternCompleteListener;
         init();
+        initListener();
+        show();
+    }
+
+    private void initListener() {
+
     }
 
     private void init() {
@@ -64,7 +70,7 @@ public class PatternDialog extends Dialog implements PatternLockViewListener {
         patternCompleteListener.onCleared();
     }
 
-    public abstract class OnPatternCompleteListener {
+    public abstract static class OnPatternCompleteListener {
         abstract void onComplete(List<PatternLockView.Dot> pattern);
 
         void onStarted() {

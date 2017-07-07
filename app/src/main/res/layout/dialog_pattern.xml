@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_overlay"
+    android:background="@color/black"
     tools:context="com.showcase.lockScreen.PasswordActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -19,7 +19,7 @@
          android:fitsSystemWindows. -->
 
 
-    <TextView
+   <!-- <TextView
         android:layout_gravity="bottom"
         android:id="@+id/txtConfirm"
         android:layout_width="match_parent"
@@ -29,6 +29,6 @@
         android:text="@string/please_confirm_again"
         android:textColor="@color/white"
         android:textSize="@dimen/textSize16sp" />
-
+-->
 
 </FrameLayout>

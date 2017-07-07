@@ -30,4 +30,6 @@
     <string name="pin_it">Pin it !</string>
     <string name="image_info">Image Info</string>
     <string name="allPics">AllPhotos</string>
+    <string name="set_pin">Set Pin</string>
+    <string name="remove_password">Remove password</string>
 </resources>
