@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ShowCase.iml" filepath="$PROJECT_DIR$/ShowCase.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pinlockview/pinlockview.iml" filepath="$PROJECT_DIR$/pinlockview/pinlockview.iml" />
     </modules>
   </component>
 </project>

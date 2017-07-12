@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v21\\notification_action.xml",
+        "source": "C:\\Users\\anish\\.android\\build-cache\\f80f9826dd4c881a6a249f312746a5eac3368660\\output\\res\\layout-v21\\notification_action.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v21\\notification_template_icon_group.xml",
+        "source": "C:\\Users\\anish\\.android\\build-cache\\f80f9826dd4c881a6a249f312746a5eac3368660\\output\\res\\layout-v21\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v21\\notification_template_custom_big.xml",
+        "source": "C:\\Users\\anish\\.android\\build-cache\\f80f9826dd4c881a6a249f312746a5eac3368660\\output\\res\\layout-v21\\notification_template_custom_big.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v21\\layout_number_item.xml",
+        "source": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\bundles\\debug\\res\\layout-v21\\layout_number_item.xml"
+    },
+    {
+        "merged": "D:\\AndroidStudioProjects\\HelperProjects\\ShowCase\\pinlockview\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v21\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\anish\\.android\\build-cache\\f80f9826dd4c881a6a249f312746a5eac3368660\\output\\res\\layout-v21\\notification_action_tombstone.xml"
+    }
+]

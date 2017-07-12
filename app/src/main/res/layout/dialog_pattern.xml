@@ -10,25 +10,35 @@
          TextureView, etc. -->
 
 
-    <com.andrognito.patternlockview.PatternLockView
-        android:id="@+id/pattern_lock_view"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_gravity="center_horizontal|center_vertical" />
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
+    <RelativeLayout
 
-
-   <!-- <TextView
-        android:layout_gravity="bottom"
-        android:id="@+id/txtConfirm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="16dp"
-        android:text="@string/please_confirm_again"
-        android:textColor="@color/white"
-        android:textSize="@dimen/textSize16sp" />
--->
+        android:layout_height="match_parent">
+
+        <com.andrognito.patternlockview.PatternLockView
+            android:id="@+id/pattern_lock_view"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+        <!-- This FrameLayout insets its children based on system windows using
+             android:fitsSystemWindows. -->
+
+
+        <TextView
+            android:id="@+id/txtConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pattern_lock_view"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:gravity="center_horizontal"
+            android:padding="16dp"
+            android:text="@string/please_confirm_again"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textSize16sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
 
 </FrameLayout>
