@@ -11,7 +11,7 @@ import com.showcase.helper.FunctionHelper;
 import com.showcase.helper.PrefUtils;
 import com.showcase.helper.UIHelper;
 
-public class PasswordActivity extends AppCompatActivity {
+public class PasswordSettingActivity extends AppCompatActivity {
     private Context context;
 
     @Override
@@ -21,7 +21,7 @@ public class PasswordActivity extends AppCompatActivity {
         setContentView(R.layout.password_setting);
     }
 
-
+    ///////////////////--all clicks--///////////////////////////
     public void clickSetPattern(View view) {
         new PatternDialog(context, new PatternDialog.OnPatternCompleteListener() {
             @Override
@@ -42,6 +42,7 @@ public class PasswordActivity extends AppCompatActivity {
                     PrefUtils.setLockStatus(context, true);
                     PrefUtils.setUserPassword(context, pattern);
                     Toast.makeText(context, R.string.pattern_set, Toast.LENGTH_SHORT).show();
+                    PrefUtils.setIsPattern(context, true);
                 } else {
                     Toast.makeText(context, R.string.pattern_not_macthing_plz_try_again, Toast.LENGTH_SHORT).show();
                 }
@@ -67,6 +68,7 @@ public class PasswordActivity extends AppCompatActivity {
                     Toast.makeText(context, R.string.pin_set, Toast.LENGTH_SHORT).show();
                     PrefUtils.setLockStatus(context, true);
                     PrefUtils.setUserPassword(context, pin);
+                    PrefUtils.setIsPattern(context, false);
                 } else {
                     Toast.makeText(context, R.string.pin_not_matching_please_try_again, Toast.LENGTH_SHORT).show();
                 }
@@ -88,4 +90,6 @@ public class PasswordActivity extends AppCompatActivity {
             }
         }, getString(R.string.yeah_i_m), getString(R.string.cancel));
     }
+
+    ///////////////////--all clicks--///////////////////////////
 }

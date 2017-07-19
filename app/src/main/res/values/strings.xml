@@ -32,4 +32,11 @@
     <string name="allPics">AllPhotos</string>
     <string name="set_pin">Set Pin</string>
     <string name="remove_password">Remove password</string>
+    <string name="yeah_i_m">Yeah I\'m</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure_you_want_to_remove_password_lock">Are you sure you want to remove password lock?</string>
+    <string name="pin_not_matching_please_try_again">Pin not matching, please try again :(</string>
+    <string name="pin_set">Pin set.</string>
+    <string name="pattern_set">Pattern set.</string>
+    <string name="pattern_not_macthing_plz_try_again">Pattern not matching, please try again :(</string>
 </resources>

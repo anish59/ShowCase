@@ -67,6 +67,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".lockScreen.PasswordSettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

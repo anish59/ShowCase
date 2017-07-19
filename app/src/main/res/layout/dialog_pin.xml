@@ -7,6 +7,19 @@
     android:orientation="vertical"
     android:padding="@dimen/dimen_24dp">
 
+    <TextView
+        android:id="@+id/txtConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pattern_lock_view"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="@dimen/dimen_8dp"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:text="@string/please_confirm_again"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textSize16sp"
+        android:visibility="gone"/>
 
     <com.andrognito.pinlockview.IndicatorDots
         android:id="@+id/indicator_dots"
@@ -23,6 +36,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:layout_weight="1"
+        app:indicatorType="fillWithAnimation"
         app:keypadButtonSize="72dp"
         app:keypadShowDeleteButton="true"
         app:keypadTextColor="@color/white"

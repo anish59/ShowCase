@@ -25,8 +25,11 @@ import com.showcase.fragments.GalleryFragment;
 import com.showcase.fragments.GalleryFragment2;
 import com.showcase.fragments.VideoFragment2;
 import com.showcase.helper.FunctionHelper;
+import com.showcase.helper.PrefUtils;
 import com.showcase.helper.UIHelper;
-import com.showcase.lockScreen.PasswordActivity;
+import com.showcase.lockScreen.PasswordSettingActivity;
+import com.showcase.lockScreen.PatternDialog;
+import com.showcase.lockScreen.PinDialog;
 import com.showcase.model.SlideData;
 
 import java.util.ArrayList;
@@ -51,9 +54,39 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = MainActivity.this;
+        checkPassword();
+    }
+
+    private void checkPassword() {
+        if (PrefUtils.getLockStatus(mContext)) {
+            if (PrefUtils.isPattern(mContext)) {
+                new PatternDialog(mContext, new PatternDialog.onPatternDrawnListener() {
+                    @Override
+                    public void complete(boolean isCorrect) {
+                        if (isCorrect) {
+                            proceed();
+                        }
+                    }
+                });
+            } else {
+                new PinDialog(mContext, new PinDialog.OnPinEnteredListener() {
+                    @Override
+                    public void complete(boolean isCorrect) {
+                        if (isCorrect) {
+                            proceed();
+                        }
+                    }
+                });
+            }
+        } else {
+            proceed();
+        }
+    }
+
+    private void proceed() {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        mContext = MainActivity.this;
         askForPermissions();
         initializeActionBar();
         initialCalling();
@@ -131,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
         if (currentPosition == postion) {
 
             if (currentPosition == 3) {
-                startActivity(new Intent(mContext, PasswordActivity.class));
+                startActivity(new Intent(mContext, PasswordSettingActivity.class));
             } else {
                 closeDrware();
             }
@@ -230,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements SlideMenuAdapter.
                 currentFragment = new FragmentPinnedPics();
                 break;
             case 3:
-                startActivity(new Intent(mContext, PasswordActivity.class));
+                startActivity(new Intent(mContext, PasswordSettingActivity.class));
                 break;
             default:
                 break;

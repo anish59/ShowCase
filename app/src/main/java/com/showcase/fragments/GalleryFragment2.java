@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.showcase.AlbumActivity2;
-import com.showcase.PhotoPreviewActivity;
 import com.showcase.R;
 import com.showcase.adapter.GalleryAdapter;
 import com.showcase.componentHelper.PhoneMediaControl;
@@ -44,9 +43,9 @@ import java.util.ArrayList;
 
 public class GalleryFragment2 extends Fragment {
     private MenuItem itemDeselect, itemShare, itemDelete;
-    private TextView emptyView;
+    private TextView searchEmptyView;
     private FloatingActionButton fabCam;
-
+//    private View epmtyView;
     private GridView mView;
     private Context mContext;
     private RecyclerView recyclerView;
@@ -83,11 +82,11 @@ public class GalleryFragment2 extends Fragment {
         mContext = this.getActivity();
         View v = inflater.inflate(R.layout.fragment_gallery2, null);
         initializeView(v);
-        initListeners();
+//        initListeners();
         return v;
     }
 
-    private void initListeners() {
+ /*   private void initListeners() {
         fabCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,7 +106,7 @@ public class GalleryFragment2 extends Fragment {
 
             }
         });
-    }
+    }*/
 
     private void initAdapter() {
         galleryAdapter = new GalleryAdapter(getActivity(), albumsSorted, new GalleryAdapter.OnItemClicked() {
@@ -162,17 +161,18 @@ public class GalleryFragment2 extends Fragment {
     }
 
     private void initializeView(View v) {
+//        epmtyView = v.findViewById(R.id.emptyView);
         mView = (GridView) v.findViewById(R.id.grid_view);
-        emptyView = (TextView) v.findViewById(R.id.searchEmptyView);
+        searchEmptyView = (TextView) v.findViewById(R.id.searchEmptyView);
         recyclerView = (RecyclerView) v.findViewById(R.id.rvImages);
-        emptyView.setOnTouchListener(new View.OnTouchListener() {
+        searchEmptyView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
-        emptyView.setText("NoPhotos");
-        fabCam = (FloatingActionButton) v.findViewById(R.id.fabCam);
+        searchEmptyView.setText("NoPhotos");
+//        fabCam = (FloatingActionButton) v.findViewById(R.id.fabCam);
         initAdapter();
         // loadAllAlbum();
     }
@@ -190,6 +190,11 @@ public class GalleryFragment2 extends Fragment {
                     mView.setEmptyView(null);
                 }
 
+                if (albumsSorted.isEmpty() || albumsSorted_ == null) {
+//                    epmtyView.setVisibility(View.VISIBLE);
+                } else {
+//                    epmtyView.setVisibility(View.GONE);
+                }
                 if (galleryAdapter != null) {
                     galleryAdapter.setItems(getActivity(), albumsSorted, true);
                 }

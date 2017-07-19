@@ -9,11 +9,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.andrognito.patternlockview.utils.PatternLockUtils;
+import com.andrognito.patternlockview.utils.ResourceUtils;
 import com.showcase.R;
+import com.showcase.helper.PrefUtils;
 
 import java.util.List;
 
@@ -26,12 +29,25 @@ public class PatternDialog extends Dialog {
     private OnPatternCompleteListener patternCompleteListener;
     private PatternLockView patternlockview;
     private TextView txtConfirm;
+    private boolean isFromSettings = false;
+    private onPatternDrawnListener onPatternDrawnListener;
 
     public PatternDialog(@NonNull Context context, OnPatternCompleteListener patternCompleteListener, boolean isConfirm) {
         super(context);
         this.context = context;
         this.patternCompleteListener = patternCompleteListener;
+        this.isFromSettings = true;
         init(isConfirm);
+        initListener();
+        show();
+    }
+
+    public PatternDialog(@NonNull Context context, onPatternDrawnListener onPatternDrawnListener) {
+        super(context);
+        this.context = context;
+        this.isFromSettings = false;
+        this.onPatternDrawnListener=onPatternDrawnListener;
+        init(false);
         initListener();
         show();
     }
@@ -45,13 +61,26 @@ public class PatternDialog extends Dialog {
 
             @Override
             public void onProgress(List<PatternLockView.Dot> progressPattern) {
-
             }
 
             @Override
             public void onComplete(List<PatternLockView.Dot> pattern) {
-                patternCompleteListener.complete(PatternLockUtils.patternToString(patternlockview, pattern));
-                dismiss();
+                String inputPattern = PatternLockUtils.patternToString(patternlockview, pattern);
+                if (isFromSettings) {
+                    patternCompleteListener.complete(inputPattern);
+                    dismiss();
+                } else {
+                    if (PrefUtils.getUserPassword(context).equals(inputPattern)) {
+                        patternlockview.setCorrectStateColor(ResourceUtils.getColor(context, R.color.correct_blue));
+                        onPatternDrawnListener.complete(true);
+                        dismiss();
+                    } else {
+                        Toast.makeText(context, "Wrong Pattern :(", Toast.LENGTH_SHORT).show();
+//                        patternlockview.setWrongStateColor(ResourceUtils.getColor(context, R.color.pomegranate));
+                        patternlockview.setNormalStateColor(ResourceUtils.getColor(context, R.color.white));
+                        patternlockview.setCorrectStateColor(ResourceUtils.getColor(context, R.color.pomegranate));
+                    }
+                }
             }
 
             @Override
@@ -74,7 +103,7 @@ public class PatternDialog extends Dialog {
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
 
-        this.setCanceledOnTouchOutside(true);
+        this.setCanceledOnTouchOutside(false);
 
         if (isConfirm) {
             txtConfirm.setVisibility(View.VISIBLE);
@@ -100,5 +129,9 @@ public class PatternDialog extends Dialog {
 
     public interface OnPatternCompleteListener {
         void complete(String pattern);
+    }
+
+    public interface onPatternDrawnListener {
+        void complete(boolean isCorrect);
     }
 }

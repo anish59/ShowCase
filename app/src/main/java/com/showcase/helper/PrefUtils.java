@@ -8,6 +8,8 @@ public class PrefUtils {
     public static String IS_FIRST_TIME = "IS_FIRST_TIME";
     public static String IS_LOCKED = "IS_LOCKED";
     public static String USER_PIN = "USER_PIN";
+    public static String IS_PATTERN = "IS_PATTERN";
+
     public static String OBJ = "OBJ";
 
     public static void setIsFirstTime(Context context, boolean isFirstTime) {
@@ -26,18 +28,25 @@ public class PrefUtils {
         return Prefs.with(context).getBoolean(IS_LOCKED, false);
     }
 
+    public static void setIsPattern(Context context, boolean isPatternLocked) {
+        Prefs.with(context).save(IS_PATTERN, isPatternLocked);
+    }
 
-    public static void setUserPin(Context context, String pin) {
+    public static boolean isPattern(Context context) {
+        return Prefs.with(context).getBoolean(IS_PATTERN, false);
+    }
+
+    public static void setUserPassword(Context context, String pin) {
         Prefs.with(context).save(USER_PIN, pin);
     }
 
-    public static String getUserPin(Context context) {
+    public static String getUserPassword(Context context) {
         return Prefs.with(context).getString(USER_PIN, "");
     }
 
 
     /**
-     * Demo of storing an object as accessing the same is as below
+     * Demo of storing an object and accessing the same is as below
      */
 
     /************************************************************************************

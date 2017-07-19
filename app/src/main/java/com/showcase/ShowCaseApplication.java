@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.facebook.stetho.Stetho;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -18,7 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class ShowCaseApplication extends Application {
 
-    public static Context applicationContext=null;
+    public static Context applicationContext = null;
     public static volatile Handler applicationHandler = null;
     public static Point displaySize = new Point();
     public static float density = 1;
@@ -32,7 +33,7 @@ public class ShowCaseApplication extends Application {
         checkDisplaySize();
         density = ShowCaseApplication.applicationContext.getResources().getDisplayMetrics().density;
 
-
+        initStetho();//Todo: while uploading app please comment me otherwise I will reveal your data
         DisplayImageOptions defaultDisplayImageOptions = new DisplayImageOptions.Builder() //
                 .considerExifParams(true)
                 .resetViewBeforeLoading(true)
@@ -53,7 +54,7 @@ public class ShowCaseApplication extends Application {
     }
 
     public static int dp(float value) {
-        return (int)Math.ceil(density * value);
+        return (int) Math.ceil(density * value);
     }
 
     public static void checkDisplaySize() {
@@ -62,7 +63,7 @@ public class ShowCaseApplication extends Application {
             if (manager != null) {
                 Display display = manager.getDefaultDisplay();
                 if (display != null) {
-                    if(android.os.Build.VERSION.SDK_INT < 13) {
+                    if (android.os.Build.VERSION.SDK_INT < 13) {
                         displaySize.set(display.getWidth(), display.getHeight());
                     } else {
                         display.getSize(displaySize);
@@ -71,5 +72,12 @@ public class ShowCaseApplication extends Application {
             }
         } catch (Exception e) {
         }
+    }
+
+
+    private void initStetho() {
+        Stetho.initialize(Stetho.newInitializerBuilder(this)
+                .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                .build());
     }
 }
