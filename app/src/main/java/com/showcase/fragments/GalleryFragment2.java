@@ -45,7 +45,7 @@ public class GalleryFragment2 extends Fragment {
     private MenuItem itemDeselect, itemShare, itemDelete;
     private TextView searchEmptyView;
     private FloatingActionButton fabCam;
-//    private View epmtyView;
+    //    private View epmtyView;
     private GridView mView;
     private Context mContext;
     private RecyclerView recyclerView;
@@ -59,6 +59,7 @@ public class GalleryFragment2 extends Fragment {
 
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
     private GalleryAdapter galleryAdapter;
+    private View emptyView;
 
     /*   public GalleryFragment() {
            loadAllAlbum();
@@ -161,7 +162,7 @@ public class GalleryFragment2 extends Fragment {
     }
 
     private void initializeView(View v) {
-//        epmtyView = v.findViewById(R.id.emptyView);
+        emptyView = v.findViewById(R.id.emptyView);
         mView = (GridView) v.findViewById(R.id.grid_view);
         searchEmptyView = (TextView) v.findViewById(R.id.searchEmptyView);
         recyclerView = (RecyclerView) v.findViewById(R.id.rvImages);
@@ -190,10 +191,10 @@ public class GalleryFragment2 extends Fragment {
                     mView.setEmptyView(null);
                 }
 
-                if (albumsSorted.isEmpty() || albumsSorted_ == null) {
-//                    epmtyView.setVisibility(View.VISIBLE);
+                if (albumsSorted_ == null || albumsSorted.isEmpty() || albumsSorted.size() == 0) {
+                    emptyView.setVisibility(View.VISIBLE);
                 } else {
-//                    epmtyView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.GONE);
                 }
                 if (galleryAdapter != null) {
                     galleryAdapter.setItems(getActivity(), albumsSorted, true);

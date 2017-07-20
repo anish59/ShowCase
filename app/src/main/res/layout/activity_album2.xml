@@ -26,8 +26,14 @@
         android:textColor="#808080"
         android:textSize="20dp"
         android:visibility="gone" />
+    <include
+        android:id="@+id/emptyView"
+        layout="@layout/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-
+<!--
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCam"
         android:layout_width="wrap_content"
@@ -39,6 +45,6 @@
         android:layout_marginEnd="19dp"
         android:layout_marginRight="19dp"
         app:backgroundTint="@color/pomegranate"
-        android:src="@drawable/ic_camera_alt" />
+        android:src="@drawable/ic_camera_alt" />-->
 
 </RelativeLayout>

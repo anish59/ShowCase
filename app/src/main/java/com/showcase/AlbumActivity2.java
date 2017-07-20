@@ -43,7 +43,6 @@ public class AlbumActivity2 extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private ProgressListener progressListener;
-    private FloatingActionButton fabCam;
 
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
     public static ArrayList<PhoneMediaControl.PhotoEntry> photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
@@ -56,6 +55,7 @@ public class AlbumActivity2 extends AppCompatActivity {
     private boolean isDeselectIconVisible = false;
     private MenuItem itemDeselect, itemShare, itemDelete, itemPinImage;
     private boolean isPinnedAlbum = false;
+    private View emptyView;
 
 
     @Override
@@ -64,33 +64,11 @@ public class AlbumActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_album2);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         recyclerView = (RecyclerView) findViewById(R.id.rvImages);
-        fabCam = (FloatingActionButton) findViewById(R.id.fabCam);
+        emptyView = findViewById(R.id.emptyView);
+//        fabCam = (FloatingActionButton) findViewById(R.id.fabCam);
 
         getIntentSetData();
 
-    }
-
-    private void initListeners() {
-        fabCam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                FunctionHelper.setPermission(mContext, new String[]{Manifest.permission.CAMERA}, new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                        UIHelper.fireIntent(mContext, intent, true);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                        Toast.makeText(mContext, "Action Unavailable", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
-
-            }
-        });
     }
 
 
@@ -110,15 +88,20 @@ public class AlbumActivity2 extends AppCompatActivity {
         mediaControl.setLoadalbumphoto(new PhoneMediaControl.loadAlbumPhoto() {
             @Override
             public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
+
                 albumsSorted = albumsSorted1;
-                photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-                photos = albumsSorted.get(0).photos;
-                initializeActionBar();
-                if (!isFromRestart) {
-                    initAdapter();
-                    initListeners();
+                if (albumsSorted != null && albumsSorted.size() > 0) {
+                    emptyView.setVisibility(View.GONE);
+                    photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
+                    photos = albumsSorted.get(0).photos;
+                    initializeActionBar();
+                    if (!isFromRestart) {
+                        initAdapter();
+                    } else {
+                        mAdapter.setItems(photos, mContext, true);
+                    }
                 } else {
-                    mAdapter.setItems(photos, mContext, true);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -235,7 +218,11 @@ public class AlbumActivity2 extends AppCompatActivity {
                 }, "yes", "no");
                 break;
             case R.id.action_PinImage:
-                pinSelectedImages();
+                try {
+                    pinSelectedImages();
+                } catch (Exception e) {
+                    System.out.println("pinError:: " + e.getMessage());
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

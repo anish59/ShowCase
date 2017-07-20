@@ -55,6 +55,7 @@ public class FragmentPinnedPics extends Fragment {
     private boolean isDeselectIconVisible = false;
     private AlbumAdapter mAdapter;
     private ProgressListener progressListener;
+    private View emptyView;
 
     @Override
 
@@ -115,6 +116,7 @@ public class FragmentPinnedPics extends Fragment {
     private void initViews(View view) {
         searchEmptyView = (TextView) view.findViewById(R.id.searchEmptyView);
         rvImages = (RecyclerView) view.findViewById(R.id.rvImages);
+        emptyView = view.findViewById(R.id.emptyView);
     }
 
 
@@ -141,13 +143,18 @@ public class FragmentPinnedPics extends Fragment {
             @Override
             public void loadPhoto(ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted1) {
                 albumsSorted = albumsSorted1; //todo: check validation if its not empty
-                photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
-                photos = albumsSorted.get(0).photos;
-                initializeActionBar();
-                if (!isFromRestart) {
-                    initAdapter();
+                if (albumsSorted != null && albumsSorted.size() > 0) {
+                    emptyView.setVisibility(View.GONE);
+                    photos = new ArrayList<PhoneMediaControl.PhotoEntry>();
+                    photos = albumsSorted.get(0).photos;
+                    initializeActionBar();
+                    if (!isFromRestart) {
+                        initAdapter();
+                    } else {
+                        mAdapter.setItems(photos, context, true);
+                    }
                 } else {
-                    mAdapter.setItems(photos, context, true);
+                    emptyView.setVisibility(View.VISIBLE);
                 }
             }
         });

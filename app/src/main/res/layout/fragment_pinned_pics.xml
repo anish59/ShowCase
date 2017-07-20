@@ -21,4 +21,10 @@
         android:textColor="#808080"
         android:textSize="@dimen/dimen_20sp"
         android:visibility="gone" />
+    <include
+        android:id="@+id/emptyView"
+        layout="@layout/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </RelativeLayout>

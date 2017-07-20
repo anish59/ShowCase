@@ -50,7 +50,7 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
     private boolean isMultiSelectionMode = false;
     private int firstSelectedPosition;
     private ProgressListener progressListener;
-    private FloatingActionButton fabCam;
+    private View emptyView;
 
     @Override
     public void onResume() {
@@ -69,15 +69,16 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
         /** Inflating the layout for this fragment **/
         mContext = this.getActivity();
         View v = inflater.inflate(R.layout.fragment_gallery2, null);
+        emptyView = v.findViewById(R.id.emptyView);
         recyclerView = (RecyclerView) v.getRootView().getRootView().findViewById(R.id.rvImages);
-        fabCam = (FloatingActionButton) v.findViewById(R.id.fabCam);
-        initListeners();
+//        fabCam = (FloatingActionButton) v.findViewById(R.id.fabCam);
+//        initListeners();
         initAdapter();
         return v;
     }
 
     private void initListeners() {
-        fabCam.setOnClickListener(new View.OnClickListener() {
+     /*   fabCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -95,7 +96,7 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
                 });
 
             }
-        });
+        });*/
     }
 
     private void initAdapter() {
@@ -153,6 +154,12 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
             mAdapter.setItems(arrVideoDetails, true);
             recyclerView.setItemViewCacheSize(videos != null ? videos.size() : 0);//keep it minimum 1 to avoid any conflict
 //            new MainActivity().setToolBar(toolbar, "Camera", "(" + videos.size() + ")");
+
+            if (arrVideoDetails != null || arrVideoDetails.size() > 0) {
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+            }
         }
     }
 
