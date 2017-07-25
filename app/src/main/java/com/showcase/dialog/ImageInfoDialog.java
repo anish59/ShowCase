@@ -16,7 +16,7 @@ import com.showcase.R;
  * Created by anish on 29-06-2017.
  */
 
-public class ImageInfoDialog extends Dialog  {
+public class ImageInfoDialog extends Dialog {
     private TextView txtImageName;
     private TextView txtSize;
     private TextView txtCreatedDate;
@@ -41,10 +41,10 @@ public class ImageInfoDialog extends Dialog  {
     }
 
     private void setData(String name, String createdDate, String size, String path) {
-        txtImageName.setText(name);
-        txtCreatedDate.setText(createdDate);
-        txtSize.setText(size);
-        txtPath.setText(path);
+        txtImageName.setText("Name: " + name);
+        txtCreatedDate.setText("Created Date: " + createdDate);
+        txtSize.setText("Size: " + size);
+        txtPath.setText("Path: " + path);
     }
 
     private void init() {
@@ -57,6 +57,7 @@ public class ImageInfoDialog extends Dialog  {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
         getWindow().setAttributes(lp);
+        getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
         this.setCanceledOnTouchOutside(true);
 
         btnOk = (Button) view.findViewById(R.id.btnOk);

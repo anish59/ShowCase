@@ -28,10 +28,10 @@ public class FileHelper {
         long fileSizeInBytes = file.length();
         long fileSizeInKB = fileSizeInBytes / 1024;// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInMB = fileSizeInKB / 1024;// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-        if (fileSizeInMB >= 0) {
+        if (fileSizeInMB > 0) {
             fileSize = fileSizeInMB + " MB";
         } else {
-            if (fileSizeInKB >= 0) {
+            if (fileSizeInKB > 0) {
                 fileSize = fileSizeInKB + " KB";
             } else {
                 fileSize = fileSizeInBytes + " Bytes";

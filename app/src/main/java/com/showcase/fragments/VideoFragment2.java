@@ -155,10 +155,10 @@ public class VideoFragment2 extends Fragment implements PhoneMediaVideoControlle
             recyclerView.setItemViewCacheSize(videos != null ? videos.size() : 0);//keep it minimum 1 to avoid any conflict
 //            new MainActivity().setToolBar(toolbar, "Camera", "(" + videos.size() + ")");
 
-            if (arrVideoDetails != null || arrVideoDetails.size() > 0) {
-                emptyView.setVisibility(View.VISIBLE);
-            } else {
+            if (arrVideoDetails != null && arrVideoDetails.size() > 0) {
                 emptyView.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.VISIBLE);
             }
         }
     }

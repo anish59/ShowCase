@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +57,7 @@ public class AlbumActivity2 extends AppCompatActivity {
     private MenuItem itemDeselect, itemShare, itemDelete, itemPinImage;
     private boolean isPinnedAlbum = false;
     private View emptyView;
+    private long mLastClickTime = 0;
 
 
     @Override
@@ -277,12 +279,14 @@ public class AlbumActivity2 extends AppCompatActivity {
                     files.add(Uri.parse("file:///" + photo.path));
                 }
             }
+
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
             intent = Intent.createChooser(intent, "Share with...");
             startActivity(intent);
             imageDeselectionAndNotify(itemDeselect, itemShare, itemDelete, itemPinImage);
         }
     }
+
 
     private void pinSelectedImages() {
         try {

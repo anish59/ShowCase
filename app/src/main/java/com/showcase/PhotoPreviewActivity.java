@@ -44,6 +44,7 @@ public class PhotoPreviewActivity extends ActionBarActivity {
     private Toolbar toolbar;
     private CustomViewPagerAdpater mPagerAdapter1;
     public static ArrayList<PhoneMediaControl.AlbumEntry> albumsSorted = null;
+    private boolean isPinOptionAvailable = true;
 
     ProgressListener progressListener;
 //    private MainPagerAdapter mainPagerAdapter;
@@ -66,6 +67,7 @@ public class PhotoPreviewActivity extends ActionBarActivity {
         progressListener = new ProgressBarHelper(context, "Please wait...");
 
         getIntentData();
+
         loadAlbumAndSetData(folderName);
 
     }
@@ -75,6 +77,10 @@ public class PhotoPreviewActivity extends ActionBarActivity {
 //        folderPosition = mBundle.getInt("Key_FolderID");
         folderName = mBundle.getString("Key_FolderName");
         current = mBundle.getInt("Key_ID");
+
+        if (folderName.equals(FileHelper.PINNED_FOLDER)) {
+            isPinOptionAvailable = false;
+        }
     }
 
     @Override
@@ -92,7 +98,7 @@ public class PhotoPreviewActivity extends ActionBarActivity {
         itemDelete.setVisible(true);
 
         itemDelete = menu.findItem(R.id.action_PinImage);
-        itemDelete.setVisible(true);
+        itemDelete.setVisible(isPinOptionAvailable);
 
         return super.onCreateOptionsMenu(menu);
     }
